@@ -1,0 +1,29 @@
+.main-img {
+    position: relative;
+    text-align: center;
+}
+
+.main-img img {
+    width: 100%;
+    max-height: 75vh;
+}
+
+.main-img .title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.arrow-down {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+.arrow-up {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 15px;
+    position: sticky;
+}
