@@ -12,13 +12,17 @@ use Bezhanov\Faker\Provider\Commerce;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class AppFixtures extends Fixture
 {
     protected $hasher;
-    public function __construct(UserPasswordHasherInterface $hasher)
+    protected $slugger;
+
+    public function __construct(UserPasswordHasherInterface $hasher, SluggerInterface $slugger)
     {
         $this->hasher = $hasher;
+        $this->slugger = $slugger;
     }
 
     public function load(ObjectManager $manager)
@@ -56,18 +60,26 @@ class AppFixtures extends Fixture
                     ->setType($group)
                     ->setOwner($faker->randomElement($users))
                     ->setCreatedAt($faker->dateTimeBetween('-10 months', '-6 months'))
-                    ->setUpdatedAt($faker->dateTimeBetween('-5 months'));
+                    ->setUpdatedAt($faker->dateTimeBetween('-5 months'))
+                    ->setSlug($this->slugger->slug($trick->getName()))
+                    ->setMainPic($faker->imageUrl());
 
                 $manager->persist($trick);
 
                 for ($m = 0; $m < mt_rand(3, 8); $m++) {
                     $media = new Media;
-                    $type = ['picture', 'video'];
                     $media->setName($faker->word())
                         ->setAddedBy($faker->randomElement($users))
-                        ->setLink($faker->imageUrl())
-                        ->setTrick($trick)
-                        ->setType($faker->randomElement($type));
+                        ->setTrick($trick);
+
+                    if ($faker->boolean()) {
+                        $media->setType('picture')
+                            ->setLink($faker->imageUrl());
+                    } else {
+                        $media->setType('video')
+                            ->setLink('https://www.youtube.com/embed/gbHU6J6PRRw');
+                    }
+
 
                     $manager->persist($media);
                 }

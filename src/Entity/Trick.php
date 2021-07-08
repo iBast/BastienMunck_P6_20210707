@@ -61,6 +61,16 @@ class Trick
      */
     private $comments;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $mainPic = '/img/default.jpg';
+
     public function __construct()
     {
         $this->media = new ArrayCollection();
@@ -200,6 +210,30 @@ class Trick
                 $comment->setTrick(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getMainPic(): ?string
+    {
+        return $this->mainPic;
+    }
+
+    public function setMainPic(string $mainPic): self
+    {
+        $this->mainPic = $mainPic;
 
         return $this;
     }
