@@ -70,6 +70,7 @@ nav {
     max-width: 800px;
     border: 1px solid black;
     margin: 35px auto 35px auto;
+    position: relative;
 }
 
 .cover{
@@ -87,4 +88,12 @@ nav {
 .medias-img {
     vertical-align: top;
     height: 125px;
+}
+
+.trick-toolbox {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    z-index: 10000;
 }

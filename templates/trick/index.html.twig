@@ -7,12 +7,22 @@
 {% block body %}
 	<div class="trick-container">
 		<section class="mb-2">
+			{% if app.user %}
+				<div class="d-flex trick-toolbox">
+					<div class="ms-auto p-2">
+						<a href="#" class="fs-auto">
+							<i class="fas fa-pen"></i>
+						</a>
+					</div>
+				</div>
+			{% endif %}
 			<img src="{{trick.mainPic}}" alt="" class="cover">
+
 		</section>
 		<h1>{{trick.name}}</h1>
 
 		<section
-			class="trick-medias">
+			class="trick-medias d-none d-md-block">
 			<!-- Button trigger modal -->
 			{% for media in medias %}
 				{% if media.type == "picture"  %}
@@ -25,7 +35,7 @@
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
-									<img src="{{ media.link }}" alt="trick">
+									<img src="{{ media.link }}" alt="trick" class="img-fluid">
 								</div>
 
 							</div>
@@ -36,6 +46,34 @@
 					<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 				{% endif %}
 			{% endfor %}
+
+		</section>
+		<section class="media-mobile d-flex justify-content-center mt-2 mb-2">
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#medias-modal">See medias</button>
+
+			<div class="modal fade " id="medias-modal" tabindex="-1" aria-labelledby="medias-modalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">{{trick.name}}
+								- medias</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							{% for media in medias %}
+								{% if media.type == "picture"  %}
+									<img src="{{ media.link }}" alt="trick" class="img-fluid">
+								{% endif %}
+								{% if media.type == "video" %}
+									<iframe width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+								{% endif %}
+							{% endfor %}
+						</div>
+
+					</div>
+				</div>
+			</div>
+
 
 		</section>
 		<section class="container">
@@ -49,8 +87,25 @@
 			<div class="badge bg-primary">Last update :
 				{{trick.updatedAt | date('d/m/Y')}}</div>
 		</div>
-		<section class="trick-comments">
-			comment
+		<section class="container mt-3">
+			{% if app.user %}
+				<p>form</p>
+
+			{% endif %}
+
+
+			{% for comment in comments %}
+
+				<div class="card border-primary mb-3 mx-auto">
+					<div class="card-header">{{comment.author.nickname}}
+						-
+						<small>{{ comment.createdAt | date('d/m/Y H:i')}}</small>
+					</div>
+					<div class="card-body">
+						<p class="card-text">{{comment.content}}</p>
+					</div>
+				</div>
+			{% endfor %}
 		</section>
 	</div>
 {% endblock %}

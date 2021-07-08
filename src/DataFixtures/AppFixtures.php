@@ -88,7 +88,8 @@ class AppFixtures extends Fixture
                     $comment = new Comment;
                     $comment->setContent($faker->text())
                         ->setTrick($trick)
-                        ->setAuthor($faker->randomElement($users));
+                        ->setAuthor($faker->randomElement($users))
+                        ->setCreatedAt($faker->dateTimeBetween('-6 months'));
 
                     $manager->persist($comment);
                 }
