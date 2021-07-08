@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use App\Repository\MediaRepository;
 use App\Repository\TrickRepository;
@@ -14,6 +15,8 @@ class TrickController extends AbstractController
     #[Route('/trick/{slug}', name: 'trick_show')]
     public function show($slug, TrickRepository $trickRepository, MediaRepository $mediaRepository, CommentRepository $commentRepository): Response
     {
+        $form = $this->createForm(CommentType::class);
+        $formView = $form->createView();
         $trick = $trickRepository->findOneBy(['slug' => $slug]);
         $medias = $mediaRepository->findBy(['trick' => $trick->getId()]);
         $comments = $commentRepository->findBy(['trick' => $trick->getId()], ['createdAt' => 'DESC']);
@@ -22,7 +25,8 @@ class TrickController extends AbstractController
             'trick' => $trick,
             'medias' => $medias,
             'mainPic' => $mediaRepository->findOneBy(['type' => 'picture', 'trick' => $trick->getId()]),
-            'comments' => $comments
+            'comments' => $comments,
+            'formView' => $formView
         ]);
     }
 }
