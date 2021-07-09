@@ -66,7 +66,7 @@
 										<img src="{{ media.link }}" alt="trick" class="img-fluid">
 									{% endif %}
 									{% if media.type == "video" %}
-										<iframe width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+										<iframe class="img-fluid" width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 									{% endif %}
 								{% endfor %}
 							</div>
@@ -81,11 +81,11 @@
 			<p>{{trick.description}}</p>
 		</section>
 		<div class="d-flex justify-content-around flex-wrap mt-3  mb-5">
-			<div class="badge bg-primary">Added by :
+			<div class="badge bg-info">Added by :
 				{{trick.owner.nickname}}</div>
-			<div class="badge bg-primary">Added on :
+			<div class="badge bg-info">Added on :
 				{{trick.createdAt | date('d/m/Y')}}</div>
-			<div class="badge bg-primary">Last update :
+			<div class="badge bg-info">Last update :
 				{{trick.updatedAt | date('d/m/Y')}}</div>
 		</div>
 		<hr>
@@ -114,11 +114,13 @@
 
 			{% for comment in comments %}
 
+				<b class="text-muted">{{comment.author.nickname}}</b>
+				-
+				<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
+					:</small>
+
 				<div class="card border-primary mb-3 mx-auto">
-					<div class="card-header">{{comment.author.nickname}}
-						-
-						<small>{{ comment.createdAt | date('d/m/Y H:i')}}</small>
-					</div>
+
 					<div class="card-body">
 						<p class="card-text">{{comment.content}}</p>
 					</div>

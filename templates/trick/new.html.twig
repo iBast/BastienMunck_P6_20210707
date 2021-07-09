@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	New trick
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5">
+		{{ form_start(formView) }}
+		<div class="row">
+			<div class="col-8">
+				{{ form_row(formView.name) }}
+				{{ form_row(formView.description) }}
+			</div>
+			<div class="col">
+				{{ form_row(formView.type) }}
+
+				{{ form_row(formView.mainPic) }}
+
+				<!-- Button trigger modal -->
+				<button type="submit" class="btn btn-success btn-lg">
+					<i class="fas fa-snowboarding"></i>
+					Create the trick
+				</button>
+
+			</div>
+		</div>
+		{{ form_end(formView) }}
+	</div>
+{% endblock %}
