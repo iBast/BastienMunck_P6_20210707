@@ -95,3 +95,8 @@ nav {
     top: 0;
     right: 0;
 }
+
+.add-media {
+    max-height: 125px;
+    border: 1px solid black;
+}

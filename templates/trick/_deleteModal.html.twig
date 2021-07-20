@@ -1,0 +1,21 @@
+<!-- Modal -->
+<div class="modal fade" id="deleteModal{{ trick.id }}" tabindex="-1" aria-labelledby="deleteModal{{ trick.id }}Label" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteModal{{ trick.id }}Label">Delete
+					{{ trick.name }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				You are about to delete the trick :
+				{{ trick.name }}
+				this can't be reversed
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<a href="#" type="button" class="btn btn-danger">Delete</a>
+			</div>
+		</div>
+	</div>
+</div>

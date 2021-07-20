@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick :
+	{{ trick.name }}
+{% endblock %}
+
+{% block body %}
+	<div class="trick-container">
+		<section class="mb-2">
+			{% if app.user %}
+				<div class="d-flex trick-toolbox">
+					<div class="ms-auto p-2">
+						<a href="#" class="fs-auto">
+							<i class="fas fa-pen"></i>
+						</a>
+					</div>
+				</div>
+			{% endif %}
+			<img src="{{trick.mainPic}}" alt="" class="cover">
+
+		</section>
+		{{ form_start(formView) }}
+
+		{{ form_errors(formView) }}
+		<h1 class="m-3">{{ form_row(formView.name) }}</h1>
+
+		<section class="trick-medias">
+			<div class="d-flex flex-nowrap">
+				<div class="d-flex flex-column add-media" type="button" data-bs-toggle="modal" data-bs-target="#add-modal">
+					<span class="mt-5 mx-3">add new media</span>
+
+					<i class="fas fa-plus mx-auto"></i>
+				</div>
+
+				<div class="modal fade" id="add-modal" tabindex="-1" aria-labelledby="add-modalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-xl">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="add-modalLabel">Add a new media</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								Add a media to :
+								{{ trick.name }}
+								<br>
+								<br>
+								{{ form_start(mediaView) }}
+
+								{{ form_errors(mediaView) }}
+								<div class="row">
+
+									<div class="col-md-4">
+										{{ form_row(mediaView.name) }}
+									</div>
+									<div class="col">
+										{{ form_row(mediaView.link) }}
+									</div>
+								</div>
+
+								{{ form_end(mediaView) }}
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<a href="#" type="button" class="btn btn-success">
+									<i class="fas fa-plus"></i>
+									Add</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Button trigger modal -->
+				{% for media in medias %}
+					{% if media.type == "picture"  %}
+						<div class="d-flex flex-column">
+							<div>
+								<img type="button" src="{{ media.link }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{media.id}}">
+							</div>
+							<div class="d-flex">
+								<div class="ms-auto p-2">
+									<a href="#" class="fs-auto">
+										<i class="fas fa-pen"></i>
+									</a>
+								</div>
+								<div class="ml-auto p-2">
+									<a href="#">
+										<i class="fas fa-trash"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade " id="staticBackdrop{{media.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{media.id}}" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">{{media.name}}</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<img src="{{ media.link }}" alt="trick" class="img-fluid">
+									</div>
+
+								</div>
+							</div>
+						</div>
+					{% endif %}
+					{% if media.type == "video" %}
+						<div class="d-flex flex-column">
+							<div>
+								<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							</div>
+							<div class="d-flex">
+								<div class="ms-auto p-2">
+									<a href="#" class="fs-auto">
+										<i class="fas fa-pen"></i>
+									</a>
+								</div>
+								<div class="ml-auto p-2">
+									<a href="#">
+										<i class="fas fa-trash"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</section>
+
+		<div class="container">
+			<section class="container">
+				<p>{{form_row(formView.description) }}</p>
+			</section>
+			<div class="row">
+				<div class="col-md-3 col-sm-5">
+					{{ form_row(formView.type) }}
+
+				</div>
+			</div>
+			<div class="d-flex">
+				<div class="ms-auto">
+					<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+						<i class="fas fa-trash"></i>
+						Delete
+					</button>
+					{% include "trick/_deleteModal.html.twig" %}
+				</div>
+				<button type="submit" class="btn btn-primary ms-4 me-5">
+					<i class="far fa-save"></i>
+					Save
+				</button>
+			</div>
+			{{ form_end(formView) }}
+		</div>
+	</div>
+{% endblock %}

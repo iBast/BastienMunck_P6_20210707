@@ -10,7 +10,7 @@
 			{% if app.user %}
 				<div class="d-flex trick-toolbox">
 					<div class="ms-auto p-2">
-						<a href="#" class="fs-auto">
+						<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
 							<i class="fas fa-pen"></i>
 						</a>
 					</div>
@@ -74,9 +74,9 @@
 						</div>
 					</div>
 				</div>
-			</div>
 
-		</section>
+			</section>
+		</div>
 		<section class="container mt-5">
 			<p>{{trick.description}}</p>
 		</section>

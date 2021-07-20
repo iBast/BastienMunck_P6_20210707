@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Form\CommentType;
+use App\Form\MediaType;
 use App\Form\TrickType;
 use App\Repository\CommentRepository;
 use App\Repository\MediaRepository;
@@ -21,21 +22,32 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
-    #[Route('/trick/{slug}', name: 'trick_show', priority: -1)]
-    public function show(
-        $slug,
+    protected $trickRepository;
+    protected $mediaRepository;
+    protected $commentRepository;
+    protected $em;
+
+    public function __construct(
         TrickRepository $trickRepository,
         MediaRepository $mediaRepository,
         CommentRepository $commentRepository,
         EntityManagerInterface $em,
-        Request $request
-    ): Response {
+    ) {
+        $this->trickRepository = $trickRepository;
+        $this->commentRepository = $commentRepository;
+        $this->mediaRepository = $mediaRepository;
+        $this->em = $em;
+    }
+
+    #[Route('/trick/{slug}', name: 'trick_show', priority: -1)]
+    public function show($slug, Request $request): Response
+    {
         $comment = new Comment;
         $form = $this->createForm(CommentType::class, $comment);
         $formView = $form->createView();
-        $trick = $trickRepository->findOneBy(['slug' => $slug]);
-        $medias = $mediaRepository->findBy(['trick' => $trick->getId()]);
-        $comments = $commentRepository->findBy(['trick' => $trick->getId()], ['createdAt' => 'DESC']);
+        $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
+        $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
+        $comments = $this->commentRepository->findBy(['trick' => $trick->getId()], ['createdAt' => 'DESC']);
 
         $form->handleRequest($request);
 
@@ -43,8 +55,8 @@ class TrickController extends AbstractController
             $comment->setAuthor($this->getUser())
                 ->setCreatedAt(new DateTime('now', new DateTimeZone('Europe/Paris')))
                 ->setTrick($trick);
-            $em->persist($comment);
-            $em->flush();
+            $this->em->persist($comment);
+            $this->em->flush();
 
             $this->addFlash('success', "Your comment has been registred");
 
@@ -56,13 +68,13 @@ class TrickController extends AbstractController
         return $this->render('trick/index.html.twig', [
             'trick' => $trick,
             'medias' => $medias,
-            'mainPic' => $mediaRepository->findOneBy(['type' => 'picture', 'trick' => $trick->getId()]),
             'comments' => $comments,
             'formView' => $formView
         ]);
     }
+
     #[Route('/trick/new', name: 'trick_new')]
-    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
+    public function new(SluggerInterface $slugger, Request $request)
     {
         $trick = new Trick;
         $form = $this->createForm(TrickType::class, $trick);
@@ -74,8 +86,8 @@ class TrickController extends AbstractController
                 ->setUpdatedAt(new DateTime())
                 ->setOwner($this->getUser())
                 ->setSlug($slugger->slug($trick->getName()));
-            $em->persist($trick);
-            $em->flush();
+            $this->em->persist($trick);
+            $this->em->flush();
 
             $this->addFlash('success', "Your trick has been registred");
 
@@ -88,5 +100,30 @@ class TrickController extends AbstractController
         return $this->render('trick/new.html.twig', [
             'formView' => $formView
         ]);
+    }
+
+    #[Route('/edit/{slug}', name: 'trick_edit')]
+    public function edit($slug)
+    {
+        $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
+        $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
+        $form = $this->createForm(TrickType::class, $trick);
+        $formView = $form->createView();
+        $mediaForm = $this->createForm(MediaType::class);
+        $mediaView = $mediaForm->createView();
+
+        return $this->render('trick/edit.html.twig', [
+            'slug' => $slug,
+            'trick' => $trick,
+            'medias' => $medias,
+            'formView' => $formView,
+            'mediaView' => $mediaView
+        ]);
+    }
+
+    #[Route('/delete/{{id}}', name: 'trick_delete')]
+    public function delete($id)
+    {
+        $trick = $this->trickRepository->findOneBy(['id' => $id]);
     }
 }
