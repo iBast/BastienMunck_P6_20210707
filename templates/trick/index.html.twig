@@ -81,11 +81,13 @@
 			<p>{{trick.description}}</p>
 		</section>
 		<div class="d-flex justify-content-around flex-wrap mt-3  mb-5">
-			<div class="badge bg-info">Added by :
+			<div class="badge bg-info mt-3">Added by :
 				{{trick.owner.nickname}}</div>
-			<div class="badge bg-info">Added on :
+			<div class="badge bg-info mt-3">Group:
+				{{trick.type.name}}</div>
+			<div class="badge bg-info mt-3">Added on :
 				{{trick.createdAt | date('d/m/Y')}}</div>
-			<div class="badge bg-info">Last update :
+			<div class="badge bg-info mt-3">Last update :
 				{{trick.updatedAt | date('d/m/Y')}}</div>
 		</div>
 		<hr>

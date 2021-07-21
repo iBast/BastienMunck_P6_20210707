@@ -103,7 +103,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/edit/{slug}', name: 'trick_edit')]
-    public function edit($slug)
+    public function edit($slug, Request $request, SluggerInterface $slugger)
     {
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
         $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
@@ -111,6 +111,18 @@ class TrickController extends AbstractController
         $formView = $form->createView();
         $mediaForm = $this->createForm(MediaType::class);
         $mediaView = $mediaForm->createView();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $trick->setUpdatedAt(new DateTime())
+                ->setSlug($slugger->slug($trick->getName()));
+            $this->em->flush();
+
+            $this->addFlash('success', "Your trick has been updated");
+
+            return $this->redirectToRoute('trick_show', [
+                'slug' => $trick->getSlug()
+            ]);
+        }
 
         return $this->render('trick/edit.html.twig', [
             'slug' => $slug,
