@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick :
+	{{ trick.name }}
+{% endblock %}
+
+{% block body %}
+	<div class="trick-container">
+		<section class="mb-2">
+			{% if app.user %}
+				<div class="d-flex trick-toolbox">
+					<div class="ms-auto p-2">
+						<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
+							<i class="fas fa-pen"></i>
+						</a>
+					</div>
+				</div>
+			{% endif %}
+			<img src="{{trick.mainPic}}" alt="" class="cover">
+
+		</section>
+		<h1>{{trick.name}}</h1>
+
+		<section
+			class="trick-medias d-none d-md-block">
+			<!-- Button trigger modal -->
+			{% for media in medias %}
+				{% if media.type == "picture"  %}
+					<img type="button" src="{{ media.link }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{media.id}}">
+					<div class="modal fade " id="staticBackdrop{{media.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{media.id}}" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">{{media.name}}</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<img src="{{ media.link }}" alt="trick" class="img-fluid">
+								</div>
+
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				{% if media.type == "video" %}
+					<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				{% endif %}
+			{% endfor %}
+
+		</section>
+		<div class="d-sm-block d-md-none">
+			<section class="media-mobile d-flex justify-content-center mt-2 mb-5 ">
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#medias-modal">See medias</button>
+
+				<div class="modal fade " id="medias-modal" tabindex="-1" aria-labelledby="medias-modalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">{{trick.name}}
+									- medias</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								{% for media in medias %}
+									{% if media.type == "picture"  %}
+										<img src="{{ media.link }}" alt="trick" class="img-fluid">
+									{% endif %}
+									{% if media.type == "video" %}
+										<iframe class="img-fluid" width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+									{% endif %}
+								{% endfor %}
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</section>
+		</div>
+		<section class="container mt-5">
+			<p>{{trick.description}}</p>
+		</section>
+		<div class="d-flex justify-content-around flex-wrap mt-3  mb-5">
+			<div class="badge bg-info mt-3">Added by :
+				{{trick.owner.nickname}}</div>
+			<div class="badge bg-info mt-3">Group:
+				{{trick.type.name}}</div>
+			<div class="badge bg-info mt-3">Added on :
+				{{trick.createdAt | date('d/m/Y')}}</div>
+			<div class="badge bg-info mt-3">Last update :
+				{{trick.updatedAt | date('d/m/Y')}}</div>
+		</div>
+		<hr>
+		<section class="container mt-3">
+
+			{% if app.user %}
+				<div class="mb-4">
+					{{ form_start(formView) }}
+
+					{{ form_errors(formView) }}
+
+
+					{{ form_row(formView.content) }}
+
+
+					<button type="submit" class="btn btn-primary">
+						<i class="far fa-paper-plane"></i>
+						Send your comment
+					</button>
+
+
+					{{ form_end(formView) }}
+				</div>
+			{% endif %}
+
+
+			{% for comment in comments %}
+
+				<b class="text-muted">{{comment.author.nickname}}</b>
+				-
+				<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
+					:</small>
+
+				<div class="card border-primary mb-3 mx-auto">
+
+					<div class="card-body">
+						<p class="card-text">{{comment.content}}</p>
+					</div>
+				</div>
+			{% endfor %}
+		</section>
+	</div>
+{% endblock %}

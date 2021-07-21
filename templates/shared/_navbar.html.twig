@@ -13,7 +13,7 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#tricks">Tricks</a>
+					<a class="nav-link" href="{{ path('homepage') }}#tricks">Tricks</a>
 				</li>
 				{% if app.user %}
 					<li class="nav-item dropdown">
@@ -32,7 +32,7 @@
 						<a class="nav-link" href="{{ path('app_login') }}">Sign in</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Sign up</a>
+						<a class="nav-link" href="{{ path('app_register') }}">Sign up</a>
 					</li>
 
 				{% endif %}
@@ -49,7 +49,7 @@
 			</a>
 		</div>
 		<div>
-			<a href="#tricks">
+			<a href="{{ path('homepage') }}#tricks">
 				<i class="fas fa-bookmark fa-2x"></i>
 			</a>
 		</div>

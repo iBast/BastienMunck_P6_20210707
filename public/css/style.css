@@ -65,3 +65,38 @@ footer {
 nav {
     background-color: #959595;
 }
+
+.trick-container {
+    max-width: 800px;
+    border: 1px solid black;
+    margin: 35px auto 35px auto;
+    position: relative;
+}
+
+.cover{
+    width: 100%;
+    height: fit-content;
+    object-fit: cover;
+}
+
+.trick-medias {
+    overflow: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.medias-img {
+    vertical-align: top;
+    height: 125px;
+}
+
+.trick-toolbox {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.add-media {
+    max-height: 125px;
+    border: 1px solid black;
+}
