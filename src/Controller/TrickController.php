@@ -133,9 +133,20 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{{id}}', name: 'trick_delete')]
-    public function delete($id)
+    #[Route('/delete/{id}', name: 'trick_delete')]
+    public function delete($id, Request $request)
     {
         $trick = $this->trickRepository->findOneBy(['id' => $id]);
+        $submittedToken = $request->request->get('token');
+
+        // 'delete-item' is the same value used in the template to generate the token
+        if ($this->isCsrfTokenValid('delete-trick', $submittedToken)) {
+            $this->em->remove($trick);
+            $this->em->flush();
+            $this->addFlash('success', "Trick deleted");
+            return $this->redirectToRoute('homepage');
+        }
+        $this->addFlash('danger', "You can't delete this trick");
+        return $this->redirectToRoute('homepage');
     }
 }

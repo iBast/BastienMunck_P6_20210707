@@ -32,8 +32,7 @@ class Comment
 
     /**
      * @ORM\Column(type="text")
-     * * @Assert\NotBlank(message="The message is mandatory")
-     * @Assert\Length(min=3, minMessage="The message has to have at least 3 characters")
+     * @Assert\NotBlank(message="The message is mandatory")
      */
     private $content;
 
