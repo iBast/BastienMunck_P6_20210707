@@ -120,7 +120,9 @@
 				-
 				<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
 					:</small>
-
+				{% if comment.author == app.user %}
+					<span>c'est mon commentaire</span>
+				{% endif %}
 				<div class="card border-primary mb-3 mx-auto">
 
 					<div class="card-body">

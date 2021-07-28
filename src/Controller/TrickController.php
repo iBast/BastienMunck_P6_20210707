@@ -80,8 +80,11 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
+        //  si existe déjà alors erreur
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // vérifier que le slug n'existe pas
+            //boucle for tant que le slug existe ajouter un caracterre
             $trick->setCreatedAt(new DateTime())
                 ->setUpdatedAt(new DateTime())
                 ->setOwner($this->getUser())
