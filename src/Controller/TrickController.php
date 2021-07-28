@@ -113,11 +113,8 @@ class TrickController extends AbstractController
     {
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
         $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
-        $pictures = $this->pictureRepository->findBy(['trick' => $trick->getId()]);
         $form = $this->createForm(TrickType::class, $trick);
         $formView = $form->createView();
-        $mediaForm = $this->createForm(MediaType::class);
-        $mediaView = $mediaForm->createView();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setUpdatedAt(new DateTime())
@@ -135,9 +132,8 @@ class TrickController extends AbstractController
             'slug' => $slug,
             'trick' => $trick,
             'medias' => $medias,
-            'pictures' => $pictures,
-            'formView' => $formView,
-            'mediaView' => $mediaView
+            'pictures' => $this->pictureRepository->findBy(['trick' => $trick->getId()]),
+            'formView' => $formView
         ]);
     }
 

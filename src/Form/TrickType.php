@@ -29,12 +29,6 @@ class TrickType extends AbstractType
                     'rows' => 15
                 ]
             ])
-            ->add('mainPic', TextType::class, [
-                'label' => 'Cover picture url :',
-                'attr' => [
-                    'placeholder' => 'Enter here the picture url'
-                ]
-            ])
             ->add('type', EntityType::class, [
                 'label' => 'Trick\'s group :',
                 'placeholder' => '-- Chose the trick group --',

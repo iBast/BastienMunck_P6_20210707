@@ -15,7 +15,7 @@
 				</div>
 			</div>
 
-			<img src="{{trick.mainPic}}" alt="" class="cover">
+			<img src="{{trick.mainPicture.path}}" alt="" class="cover">
 
 		</section>
 		{{ form_start(formView) }}
@@ -33,60 +33,59 @@
 					</div>
 				</div>
 				<!-- Button trigger modal -->
-				{% for media in medias %}
-					{% if media.type == "picture"  %}
-						<div class="d-flex flex-column">
-							<div>
-								<img type="button" src="{{ media.link }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{media.id}}">
-							</div>
-							<div class="d-flex">
-								<div class="ms-auto p-2">
-									<a href="#" class="fs-auto">
-										<i class="fas fa-pen"></i>
-									</a>
-								</div>
-								<div class="ml-auto p-2">
-									<a href="#">
-										<i class="fas fa-trash"></i>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div class="modal fade " id="staticBackdrop{{media.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{media.id}}" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title" id="exampleModalLabel">{{media.name}}</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<img src="{{ media.link }}" alt="trick" class="img-fluid">
-									</div>
 
-								</div>
+				{% for picture in pictures %}
+					<div class="d-flex flex-column">
+						<div>
+							<img type="button" src="{{ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
+						</div>
+						<div class="d-flex">
+							<div class="ms-auto p-2">
+								<a href="#" class="fs-auto">
+									<i class="fas fa-pen"></i>
+								</a>
+							</div>
+							<div class="ml-auto p-2">
+								<a href="#">
+									<i class="fas fa-trash"></i>
+								</a>
 							</div>
 						</div>
-					{% endif %}
-					{% if media.type == "video" %}
-						<div class="d-flex flex-column">
-							<div>
-								<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-							</div>
-							<div class="d-flex">
-								<div class="ms-auto p-2">
-									<a href="#" class="fs-auto">
-										<i class="fas fa-pen"></i>
-									</a>
+					</div>
+					<div class="modal fade " id="staticBackdrop{{picture.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{picture.id}}" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">{{trick.name}}</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
-								<div class="ml-auto p-2">
-									<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ media.id }}">
-										<i class="fas fa-trash"></i>
-									</a>
-									{% include "trick/_deleteModal_media.html.twig" %}
+								<div class="modal-body">
+									<img src="{{ picture.path }}" alt="trick" class="img-fluid">
 								</div>
+
 							</div>
 						</div>
-					{% endif %}
+					</div>
+				{% endfor %}
+				{% for media in medias %}
+					<div class="d-flex flex-column">
+						<div>
+							<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						</div>
+						<div class="d-flex">
+							<div class="ms-auto p-2">
+								<a href="#" class="fs-auto">
+									<i class="fas fa-pen"></i>
+								</a>
+							</div>
+							<div class="ml-auto p-2">
+								<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ media.id }}">
+									<i class="fas fa-trash"></i>
+								</a>
+								{% include "trick/_deleteModal_media.html.twig" %}
+							</div>
+						</div>
+					</div>
 				{% endfor %}
 			</div>
 
@@ -101,7 +100,7 @@
 					{{ form_row(formView.type) }}
 
 				</div>
-				{{ form_row(formView.mainPic) }}
+
 			</div>
 			<div class="d-flex">
 				<div class="ms-auto">

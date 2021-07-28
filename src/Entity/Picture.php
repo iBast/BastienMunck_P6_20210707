@@ -20,7 +20,7 @@ class Picture
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $path;
+    private string $path;
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="pictures")
