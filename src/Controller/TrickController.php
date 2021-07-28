@@ -9,6 +9,7 @@ use App\Form\MediaType;
 use App\Form\TrickType;
 use App\Repository\CommentRepository;
 use App\Repository\MediaRepository;
+use App\Repository\PictureRepository;
 use App\Repository\TrickRepository;
 use DateTime;
 use DateTimeZone;
@@ -26,17 +27,20 @@ class TrickController extends AbstractController
     protected $mediaRepository;
     protected $commentRepository;
     protected $em;
+    protected $pictureRepository;
 
     public function __construct(
         TrickRepository $trickRepository,
         MediaRepository $mediaRepository,
         CommentRepository $commentRepository,
         EntityManagerInterface $em,
+        PictureRepository $pictureRepository
     ) {
         $this->trickRepository = $trickRepository;
         $this->commentRepository = $commentRepository;
         $this->mediaRepository = $mediaRepository;
         $this->em = $em;
+        $this->pictureRepository = $pictureRepository;
     }
 
     #[Route('/trick/{slug}', name: 'trick_show', priority: -1)]
@@ -46,8 +50,6 @@ class TrickController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $formView = $form->createView();
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
-        $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
-        $comments = $this->commentRepository->findBy(['trick' => $trick->getId()], ['createdAt' => 'DESC']);
 
         $form->handleRequest($request);
 
@@ -67,8 +69,9 @@ class TrickController extends AbstractController
 
         return $this->render('trick/index.html.twig', [
             'trick' => $trick,
-            'medias' => $medias,
-            'comments' => $comments,
+            'medias' => $this->mediaRepository->findBy(['trick' => $trick->getId()]),
+            'pictures' => $this->pictureRepository->findBy(['trick' => $trick->getId()]),
+            'comments' => $this->commentRepository->findBy(['trick' => $trick->getId()], ['createdAt' => 'DESC']),
             'formView' => $formView
         ]);
     }
@@ -110,6 +113,7 @@ class TrickController extends AbstractController
     {
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
         $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
+        $pictures = $this->pictureRepository->findBy(['trick' => $trick->getId()]);
         $form = $this->createForm(TrickType::class, $trick);
         $formView = $form->createView();
         $mediaForm = $this->createForm(MediaType::class);
@@ -131,6 +135,7 @@ class TrickController extends AbstractController
             'slug' => $slug,
             'trick' => $trick,
             'medias' => $medias,
+            'pictures' => $pictures,
             'formView' => $formView,
             'mediaView' => $mediaView
         ]);

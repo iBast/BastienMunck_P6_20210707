@@ -7,6 +7,7 @@ use Faker\Factory;
 use App\Entity\User;
 use App\Entity\Group;
 use App\Entity\Media;
+use App\Entity\Picture;
 use App\Entity\Trick;
 use Bezhanov\Faker\Provider\Commerce;
 use Doctrine\Persistence\ObjectManager;
@@ -61,27 +62,30 @@ class AppFixtures extends Fixture
                     ->setOwner($faker->randomElement($users))
                     ->setCreatedAt($faker->dateTimeBetween('-10 months', '-6 months'))
                     ->setUpdatedAt($faker->dateTimeBetween('-5 months'))
-                    ->setSlug($this->slugger->slug($trick->getName()))
-                    ->setMainPic($faker->imageUrl());
+                    ->setSlug($this->slugger->slug($trick->getName()));
 
-                $manager->persist($trick);
 
-                for ($m = 0; $m < mt_rand(3, 8); $m++) {
+
+                for ($m = 0; $m < mt_rand(2, 4); $m++) {
                     $media = new Media;
-                    $media->setName($faker->word())
+                    $media
                         ->setAddedBy($faker->randomElement($users))
-                        ->setTrick($trick);
-
-                    if ($faker->boolean()) {
-                        $media->setType('picture')
-                            ->setLink($faker->imageUrl());
-                    } else {
-                        $media->setType('video')
-                            ->setLink('https://www.youtube.com/embed/gbHU6J6PRRw');
-                    }
-
-
+                        ->setTrick($trick)
+                        ->setType('Youtube')
+                        ->setLink('https://www.youtube.com/embed/gbHU6J6PRRw');
                     $manager->persist($media);
+                }
+
+                for ($p = 0; $p < mt_rand(3, 5); $p++) {
+                    $picture = new Picture;
+                    $picture
+                        ->setAddedBy($faker->randomElement($users))
+                        ->setTrick($trick)
+                        ->setPath('/img/tricks/' . mt_rand(1, 7) . '.jpg');
+                    $manager->persist($picture);
+                    if ($p === 0) {
+                        $trick->setMainPicture($picture);
+                    }
                 }
 
                 for ($c = 0; $c < mt_rand(5, 9); $c++) {
@@ -93,6 +97,7 @@ class AppFixtures extends Fixture
 
                     $manager->persist($comment);
                 }
+                $manager->persist($trick);
             }
         }
 

@@ -35,9 +35,10 @@ class Picture
     private $addedBy;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\OneToOne(targetEntity=Trick::class, mappedBy="mainPicture", cascade={"persist", "remove"})
      */
-    private $isMain = 0;
+    private $mainToTrick;
+
 
     public function getId(): ?int
     {
@@ -80,14 +81,24 @@ class Picture
         return $this;
     }
 
-    public function getIsMain(): ?bool
+    public function getMainToTrick(): ?Trick
     {
-        return $this->isMain;
+        return $this->mainToTrick;
     }
 
-    public function setIsMain(bool $isMain): self
+    public function setMainToTrick(?Trick $mainToTrick): self
     {
-        $this->isMain = $isMain;
+        // unset the owning side of the relation if necessary
+        if ($mainToTrick === null && $this->mainToTrick !== null) {
+            $this->mainToTrick->setMainPicture(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($mainToTrick !== null && $mainToTrick->getMainPicture() !== $this) {
+            $mainToTrick->setMainPicture($this);
+        }
+
+        $this->mainToTrick = $mainToTrick;
 
         return $this;
     }

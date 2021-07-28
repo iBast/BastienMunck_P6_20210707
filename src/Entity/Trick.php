@@ -72,14 +72,15 @@ class Trick
     private $slug;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $mainPic = '/img/default.jpg';
-
-    /**
      * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="trick", orphanRemoval=true)
      */
     private $pictures;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Picture::class, inversedBy="mainToTrick", orphanRemoval=true)
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     */
+    private $mainPicture;
 
     public function __construct()
     {
@@ -237,18 +238,6 @@ class Trick
         return $this;
     }
 
-    public function getMainPic(): ?string
-    {
-        return $this->mainPic;
-    }
-
-    public function setMainPic(string $mainPic): self
-    {
-        $this->mainPic = $mainPic;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Picture[]
      */
@@ -275,6 +264,18 @@ class Trick
                 $picture->setTrick(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMainPicture(): ?Picture
+    {
+        return $this->mainPicture;
+    }
+
+    public function setMainPicture(?Picture $mainPicture): self
+    {
+        $this->mainPicture = $mainPicture;
 
         return $this;
     }
