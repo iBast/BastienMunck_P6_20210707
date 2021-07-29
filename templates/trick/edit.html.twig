@@ -18,10 +18,7 @@
 			<img src="{{trick.mainPicture.path}}" alt="" class="cover">
 
 		</section>
-		{{ form_start(formView) }}
 
-		{{ form_errors(formView) }}
-		<h1 class="m-3">{{ form_row(formView.name) }}</h1>
 
 		<section class="trick-medias">
 			<div class="d-flex">
@@ -46,9 +43,10 @@
 								</a>
 							</div>
 							<div class="ml-auto p-2">
-								<a href="#">
+								<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ picture.id }}">
 									<i class="fas fa-trash"></i>
 								</a>
+
 							</div>
 						</div>
 					</div>
@@ -66,6 +64,7 @@
 							</div>
 						</div>
 					</div>
+					{% include "trick/_deleteModal_picture.html.twig" %}
 				{% endfor %}
 				{% for media in medias %}
 					<div class="d-flex flex-column">
@@ -86,11 +85,15 @@
 							</div>
 						</div>
 					</div>
+					{% include "trick/_deleteModal.html.twig" %}
 				{% endfor %}
 			</div>
 
 		</section>
+		{{ form_start(formView) }}
 
+		{{ form_errors(formView) }}
+		<h1 class="m-3">{{ form_row(formView.name) }}</h1>
 		<div class="container">
 			<section class="container">
 				<p>{{form_row(formView.description) }}</p>
@@ -115,7 +118,8 @@
 				</button>
 			</div>
 			{{ form_end(formView) }}
-			{% include "trick/_deleteModal.html.twig" %}
+
+
 		</div>
 	</div>
 {% endblock %}

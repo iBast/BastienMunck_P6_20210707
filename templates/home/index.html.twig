@@ -34,9 +34,9 @@
 									</a>
 								</div>
 								<div class="ml-auto p-2">
-									<span type="button" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+									<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
 										<i class="fas fa-trash"></i>
-									</span>
+									</a>
 									{% include "trick/_deleteModal.html.twig" %}
 								</div>
 							{% endif %}

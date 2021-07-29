@@ -111,7 +111,10 @@ class TrickController extends AbstractController
     #[Route('/edit/{slug}', name: 'trick_edit')]
     public function edit($slug, Request $request, SluggerInterface $slugger)
     {
-        $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
+        $trick = $this->trickRepository->findOneBy([
+            'slug' => $slug
+        ]);
+
         $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
         $form = $this->createForm(TrickType::class, $trick);
         $formView = $form->createView();
