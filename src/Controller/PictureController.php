@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PictureRepository;
+use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

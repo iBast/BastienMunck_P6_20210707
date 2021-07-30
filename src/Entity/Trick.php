@@ -77,7 +77,7 @@ class Trick
     private $pictures;
 
     /**
-     * @ORM\OneToOne(targetEntity=Picture::class, inversedBy="mainToTrick", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity=Picture::class, inversedBy="mainToTrick")
      * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $mainPicture;

@@ -15,11 +15,11 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 				<form
-					action="{{ path('picture_delete', {'id': picture.id}) }}" method="post" id="delete">
+					action="{{ path('picture_delete', {'id': picture.id}) }}" method="post" id="delete-picture">
 					{# the argument of csrf_token() is an arbitrary string used to generate the token #}
 					<input type="hidden" name="token" value="{{ csrf_token('delete-picture') }}"/>
 
-					<button type="submit" class="btn btn-danger" for="delete">
+					<button type="submit" class="btn btn-danger" for="delete-picture">
 						<i class="fas fa-trash"></i>
 						Delete</button>
 				</form>
