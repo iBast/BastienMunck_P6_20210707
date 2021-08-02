@@ -1,0 +1,24 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Add a picture
+{% endblock %}
+
+{% block body %}
+	<div class="trick-container p-3">
+		<section class="mb-2">
+			<h1 class="text-center">Add new medias for :
+				<br>
+				{{ trick.name}}
+			</h1>
+		</section>
+		<h2 class="mt-3 mb-3">Pictures</h2>
+		{{ form_start(form) }}
+		{{ form_errors(form) }}
+		{{ form_widget(form.file) }}
+		<button type="submit" class="btn btn-success mt-3">Add picture</button>
+		{{ form_end(form) }}
+		<h2 class="mt-3 mb-3">Vidéos</h2>
+
+	</div>
+{% endblock %}

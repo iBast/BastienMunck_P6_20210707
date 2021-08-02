@@ -16,7 +16,7 @@
 					</div>
 				</div>
 			{% endif %}
-			<img src="{{trick.mainPicture.path}}" alt="" class="cover">
+			<img src="{{upload_directory ~ trick.mainPicture.path}}" alt="" class="cover">
 
 		</section>
 		<h1>{{trick.name}}</h1>
@@ -26,7 +26,7 @@
 			<!-- Button trigger modal -->
 
 			{% for picture in pictures %}
-				<img type="button" src="{{ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
+				<img type="button" src="{{ upload_directory ~ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
 				<div class="modal fade " id="staticBackdrop{{picture.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{picture.id}}" aria-hidden="true">
 					<div class="modal-dialog modal-lg">
 						<div class="modal-content">
@@ -35,7 +35,7 @@
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
-								<img src="{{ picture.path }}" alt="trick" class="img-fluid">
+								<img src="{{ upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
 							</div>
 
 						</div>
@@ -63,7 +63,7 @@
 							<div class="modal-body">
 
 								{% for picture in pictures %}
-									<img src="{{ picture.path }}" alt="trick" class="img-fluid">
+									<img src="{{upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
 								{% endfor %}
 								{% for media in medias %}
 									<iframe class="img-fluid" width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

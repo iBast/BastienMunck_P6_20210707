@@ -82,7 +82,7 @@ class AppFixtures extends Fixture
                     $picture
                         ->setAddedBy($faker->randomElement($users))
                         ->setTrick($trick)
-                        ->setPath('/img/tricks/' . mt_rand(1, 7) . '.jpg');
+                        ->setPath(mt_rand(1, 7) . '.jpg');
                     $manager->persist($picture);
                     if ($p === 0) {
                         $trick->setMainPicture($picture);

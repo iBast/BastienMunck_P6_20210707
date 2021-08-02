@@ -15,15 +15,17 @@
 
 				</div>
 			</div>
-			<img src="{{trick.mainPicture.path}}" alt="" class="cover">
+			<img src="{{upload_directory ~ trick.mainPicture.path}}" alt="" class="cover">
 		</section>
 
 		<section class="trick-medias">
 			<div class="d-flex">
-				<div class="d-flex flex-nowrap">
+				<div class="d-flex flex-nowrap align-content-around">
 					<div class="d-flex flex-column add-media" type="button" data-bs-toggle="modal" data-bs-target="#add-modal">
-						<span class="mt-5 mx-3">add new media</span>
+						<a href="{{ path('picture_add', {'id': trick.id }) }}">
+							<span class="mt-5 mx-3">add new media</span>
 
+						</a>
 						<i class="fas fa-plus mx-auto"></i>
 					</div>
 				</div>
@@ -32,7 +34,7 @@
 				{% for picture in pictures %}
 					<div class="d-flex flex-column">
 						<div>
-							<img type="button" src="{{ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
+							<img type="button" src="{{upload_directory ~ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
 						</div>
 						<div class="d-flex">
 							<div class="ms-auto p-2">
@@ -56,7 +58,7 @@
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
-									<img src="{{ picture.path }}" alt="trick" class="img-fluid">
+									<img src="{{ upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
 								</div>
 
 							</div>

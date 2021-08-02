@@ -56,7 +56,7 @@ class TrickType extends AbstractType
                     }
                 },
                 'choice_label' => function (Picture $picture) {
-                    return '<img src="' . $picture->getpath() . '" alt="trick picture" class="img-fluid" type="button">';
+                    return '<img src="/upload/' . $picture->getpath() . '" alt="trick picture" class="img-fluid" type="button">';
                 },
                 'label_html' => true,
                 'multiple' => false,
