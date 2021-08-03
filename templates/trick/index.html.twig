@@ -14,7 +14,13 @@
 							<i class="fas fa-pen"></i>
 						</a>
 					</div>
+					<div class="ms-auto p-2">
+						<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+							<i class="fas fa-trash"></i>
+						</a>
+					</div>
 				</div>
+				{% include "trick/_deleteModal.html.twig" %}
 			{% endif %}
 			<img src="{{upload_directory ~ trick.mainPicture.path}}" alt="" class="cover">
 
