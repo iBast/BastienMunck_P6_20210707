@@ -82,7 +82,7 @@ class RegistrationController extends AbstractController
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
             $roles = $user->getRoles();
-            $roles[] = 'ROLE_VALIDATED_USER';
+            $roles[] = 'ROLE_USER';
             $user->setRoles($roles);
             $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {

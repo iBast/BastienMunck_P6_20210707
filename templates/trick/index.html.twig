@@ -14,9 +14,15 @@
 							<i class="fas fa-pen"></i>
 						</a>
 					</div>
+					<div class="ms-auto p-2">
+						<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+							<i class="fas fa-trash"></i>
+						</a>
+					</div>
 				</div>
+				{% include "trick/_deleteModal.html.twig" %}
 			{% endif %}
-			<img src="{{trick.mainPic}}" alt="" class="cover">
+			<img src="{{upload_directory ~ trick.mainPicture.path}}" alt="" class="cover">
 
 		</section>
 		<h1>{{trick.name}}</h1>
@@ -24,27 +30,27 @@
 		<section
 			class="trick-medias d-none d-md-block">
 			<!-- Button trigger modal -->
-			{% for media in medias %}
-				{% if media.type == "picture"  %}
-					<img type="button" src="{{ media.link }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{media.id}}">
-					<div class="modal fade " id="staticBackdrop{{media.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{media.id}}" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">{{media.name}}</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<img src="{{ media.link }}" alt="trick" class="img-fluid">
-								</div>
 
+			{% for picture in pictures %}
+				<img type="button" src="{{ upload_directory ~ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
+				<div class="modal fade " id="staticBackdrop{{picture.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{picture.id}}" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">{{trick.name}}</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
+							<div class="modal-body">
+								<img src="{{ upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
+							</div>
+
 						</div>
 					</div>
-				{% endif %}
-				{% if media.type == "video" %}
-					<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-				{% endif %}
+				</div>
+			{% endfor %}
+			{% for media in medias %}
+				<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 			{% endfor %}
 
 		</section>
@@ -61,13 +67,12 @@
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body">
+
+								{% for picture in pictures %}
+									<img src="{{upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
+								{% endfor %}
 								{% for media in medias %}
-									{% if media.type == "picture"  %}
-										<img src="{{ media.link }}" alt="trick" class="img-fluid">
-									{% endif %}
-									{% if media.type == "video" %}
-										<iframe class="img-fluid" width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-									{% endif %}
+									<iframe class="img-fluid" width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 								{% endfor %}
 							</div>
 
@@ -120,7 +125,9 @@
 				-
 				<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
 					:</small>
-
+				{% if comment.author == app.user %}
+					<span>c'est mon commentaire</span>
+				{% endif %}
 				<div class="card border-primary mb-3 mx-auto">
 
 					<div class="card-body">

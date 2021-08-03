@@ -1,0 +1,8 @@
+{
+    "name": "bastienmunck_p6_20210707",
+    "license": "UNLICENSED",
+    "devDependencies": {
+        "@symfony/ux-dropzone": "file:vendor/symfony/ux-dropzone/Resources/assets",
+        "stimulus": "^2.0.0"
+    }
+}

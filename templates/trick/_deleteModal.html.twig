@@ -14,7 +14,16 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<a href="#" type="button" class="btn btn-danger">Delete</a>
+				<form
+					action="{{ path('trick_delete', {'id': trick.id}) }}" method="post" id="delete-trick">
+					{# the argument of csrf_token() is an arbitrary string used to generate the token #}
+					<input type="hidden" name="token" value="{{ csrf_token('delete-trick') }}"/>
+
+					<button type="submit" class="btn btn-danger" for="delete-trick">
+						<i class="fas fa-trash"></i>
+						Delete</button>
+				</form>
+
 			</div>
 		</div>
 	</div>

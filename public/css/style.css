@@ -75,7 +75,6 @@ nav {
 
 .cover{
     width: 100%;
-    height: fit-content;
     object-fit: cover;
 }
 
@@ -99,4 +98,12 @@ nav {
 .add-media {
     max-height: 125px;
     border: 1px solid black;
+}
+
+.card-im {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0;
+    max-height: 200px;
 }
