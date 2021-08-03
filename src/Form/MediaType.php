@@ -13,16 +13,10 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'Media\'s name :',
-                'attr' => [
-                    'placeholder' => 'Enter the media name here'
-                ]
-            ])
             ->add('link', TextType::class, [
                 'label' => 'Media\'s link :',
                 'attr' => [
-                    'placeholder' => 'Enter the media linkn here'
+                    'placeholder' => 'Enter the media link here'
                 ]
             ]);
     }

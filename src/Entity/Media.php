@@ -20,21 +20,19 @@ class Media
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="The media has to have a name")
      * @Assert\Length(min=3, max=255, minMessage="The name has to have at least 3 characters", maxMessage="The name can't have more than 255 characters")
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Url(message="The media should be an url")
      */
     private $link;
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="media")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank(message="The media has to have an url")
-     * @Assert\Url(message="The media should be an url")
      */
     private $trick;
 
