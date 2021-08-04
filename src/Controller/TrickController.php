@@ -3,45 +3,28 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
-use App\Entity\Picture;
 use App\Entity\Trick;
 use App\Form\CommentType;
-use App\Form\MediaType;
 use App\Form\TrickType;
-use App\Repository\CommentRepository;
-use App\Repository\MediaRepository;
-use App\Repository\PictureRepository;
 use App\Repository\TrickRepository;
-use DateTime;
-use DateTimeZone;
-use Doctrine\ORM\EntityManager;
+use App\Manager\TrickManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
     protected $trickRepository;
-    protected $mediaRepository;
-    protected $commentRepository;
-    protected $em;
-    protected $pictureRepository;
+    protected $trickManager;
 
     public function __construct(
         TrickRepository $trickRepository,
-        MediaRepository $mediaRepository,
-        CommentRepository $commentRepository,
-        EntityManagerInterface $em,
-        PictureRepository $pictureRepository
+        TrickManager $trickManager
     ) {
         $this->trickRepository = $trickRepository;
-        $this->commentRepository = $commentRepository;
-        $this->mediaRepository = $mediaRepository;
-        $this->em = $em;
-        $this->pictureRepository = $pictureRepository;
+        $this->trickManager = $trickManager;
     }
 
     #[Route('/trick/{slug}', name: 'trick_show', priority: -1)]
@@ -58,53 +41,30 @@ class TrickController extends AbstractController
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $comment->setAuthor($this->getUser())
-                ->setCreatedAt(new DateTime('now', new DateTimeZone('Europe/Paris')))
-                ->setTrick($trick);
-            $this->em->persist($comment);
-            $this->em->flush();
-
-            $this->addFlash('success', "Your comment has been registred");
-
-            return $this->redirectToRoute('trick_show', [
-                'slug' => $trick->getSlug()
-            ]);
+            $this->trickManager->saveComment($comment, $trick);
+            $this->addFlash('success', 'Your comment has been registred');
+            return $this->redirectToRoute('trick_show', ['slug' => $trick->getSlug()]);
         }
 
         return $this->render('trick/index.html.twig', [
             'trick' => $trick,
-            'medias' => $this->mediaRepository->findBy(['trick' => $trick->getId()]),
-            'pictures' => $this->pictureRepository->findBy(['trick' => $trick->getId()]),
-            'comments' => $this->commentRepository->findBy(['trick' => $trick->getId()], ['createdAt' => 'DESC']),
             'formView' => $formView
         ]);
     }
 
     #[Route('/trick/new', name: 'trick_new')]
-    public function new(SluggerInterface $slugger, Request $request)
+    public function new(Request $request)
     {
-
         $trick = new Trick;
+
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
-        //  si existe déjà alors erreur
-
         if ($form->isSubmitted() && $form->isValid()) {
-            // vérifier que le slug n'existe pas
-            //boucle for tant que le slug existe ajouter un caracterre
-            $trick->setCreatedAt(new DateTime())
-                ->setUpdatedAt(new DateTime())
-                ->setOwner($this->getUser())
-                ->setSlug($slugger->slug($trick->getName()))
-                ->setMainPicture(new Picture('/img/default.jpg'));
-            $this->em->persist($trick);
-            $this->em->flush();
-
+            $this->trickManager->save($trick);
             $this->addFlash('success', "Your trick has been registred");
-            $slug = $trick->getSlug();
             return $this->redirectToRoute('trick_show', [
-                'slug' => $slug
+                'slug' => $trick->getSlug()
             ]);
         }
 
@@ -115,35 +75,21 @@ class TrickController extends AbstractController
     }
 
     #[Route('/edit/{slug}', name: 'trick_edit')]
-    public function edit($slug, Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
+    public function edit($slug, Request $request)
     {
-        $trick = $this->trickRepository->findOneBy([
-            'slug' => $slug
-        ]);
-
+        $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $trick->setUpdatedAt(new DateTime())
-                ->setSlug($slugger->slug($trick->getName()));
-            $em->flush();
+            $this->trickManager->save($trick);
             $this->addFlash('success', "Your trick {$trick->getName()} has been updated");
-
-            $slug = $trick->getSlug();
-            return $this->redirectToRoute('trick_show', [
-                'slug' => $slug
-            ]);
+            return $this->redirectToRoute('trick_show', ['slug' => $trick->getSlug()]);
         }
 
         $formView = $form->createView();
-
-        $medias = $this->mediaRepository->findBy(['trick' => $trick->getId()]);
-        $pictures = $this->pictureRepository->findBy(['trick' => $trick->getId()]);
         return $this->render('trick/edit.html.twig', [
             'slug' => $slug,
             'trick' => $trick,
-            'medias' => $medias,
-            'pictures' => $pictures,
             'formView' => $formView
         ]);
     }
@@ -156,8 +102,7 @@ class TrickController extends AbstractController
 
         // 'delete-item' is the same value used in the template to generate the token
         if ($this->isCsrfTokenValid('delete-trick', $submittedToken)) {
-            $this->em->remove($trick);
-            $this->em->flush();
+            $this->trickManager->remove($trick);
             $this->addFlash('success', "Trick deleted");
             return $this->redirectToRoute('homepage');
         }

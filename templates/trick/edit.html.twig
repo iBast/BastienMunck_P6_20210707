@@ -15,7 +15,7 @@
 
 				</div>
 			</div>
-			<img src="{{upload_directory ~ trick.mainPicture.path}}" alt="" class="cover">
+			<img src="{{upload_directory ~ trick.mainPicturePath}}" alt="" class="cover">
 		</section>
 
 		<section class="trick-medias">
@@ -43,7 +43,7 @@
 					</div>
 					<!-- Button trigger modal -->
 
-					{% for picture in pictures %}
+					{% for picture in trick.pictures %}
 						<div class="d-flex flex-column">
 							<div>
 								<img type="button" src="{{upload_directory ~ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
@@ -74,7 +74,7 @@
 						</div>
 						{% include "trick/_deleteModal_picture.html.twig" %}
 					{% endfor %}
-					{% for media in medias %}
+					{% for media in trick.media %}
 						<div class="d-flex flex-column">
 							<div>
 								<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

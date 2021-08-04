@@ -6,6 +6,7 @@ use App\Entity\Media;
 use App\Form\MediaType;
 use App\Repository\MediaRepository;
 use App\Repository\TrickRepository;
+use App\Manager\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,12 +18,14 @@ class MediaController extends AbstractController
     protected $em;
     protected $mediaRepository;
     protected $trickRepository;
+    protected $mediaManager;
 
-    public function __construct(EntityManagerInterface $em, MediaRepository $mediaRepository, TrickRepository $trickRepository)
+    public function __construct(EntityManagerInterface $em, MediaRepository $mediaRepository, TrickRepository $trickRepository, MediaManager  $mediaManager)
     {
         $this->em = $em;
         $this->mediaRepository = $mediaRepository;
         $this->trickRepository = $trickRepository;
+        $this->mediaManager = $mediaManager;
     }
 
     #[Route('/video/delete/{id}', name: 'media_delete')]
@@ -37,9 +40,7 @@ class MediaController extends AbstractController
             $this->em->remove($media);
             $this->em->flush();
             $this->addFlash('success', "Video deleted");
-            return $this->redirectToRoute('trick_edit', [
-                'slug' => $slug
-            ]);
+            return $this->redirectToRoute('trick_edit', ['slug' => $slug]);
         }
         $this->addFlash('danger', "You can't delete this video");
         return $this->redirectToRoute('homepage');
@@ -54,30 +55,17 @@ class MediaController extends AbstractController
         $slug = $trick->getSlug();
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
 
             $link = $form->get('link')->getData();
-
-            if (strpos($link, 'youtube') == false) {
+            if ($this->mediaManager->verifyLink($link) == false) {
                 $this->addFlash('danger', 'The video is not from youtube');
                 return $this->redirectToRoute('video_add', ['id' => $trick->getId()]);
             }
-            preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=youtu.be/)[^&\n]+#", $link, $matches);
-            $path = 'https://www.youtube.com/embed/' . $matches[0];
-
-            $video->setAddedBy($this->getUser())
-                ->setTrick($trick)
-                ->setType('Youtube')
-                ->setlink($path);
-            $em->persist($video);
-            $em->flush();
-
-            return $this->redirectToRoute('trick_show', [
-                'slug' => $slug
-            ]);;
+            $path = $this->mediaManager->parseLink($link);
+            $this->mediaManager->save($video, $trick, $path);
+            return $this->redirectToRoute('trick_show', ['slug' => $slug]);
         }
-
         return $this->render('trick/addVideo.html.twig', [
             'slug' => $trick->getSlug(),
             'trick' => $trick,
@@ -96,24 +84,13 @@ class MediaController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $link = $form->get('link')->getData();
-
-            if (strpos($link, 'youtube') == false) {
+            if ($this->mediaManager->verifyLink($link) == false) {
                 $this->addFlash('danger', 'The video is not from youtube');
                 return $this->redirectToRoute('video_add', ['id' => $trick->getId()]);
             }
-            preg_match("#(?<=v=)[a-zA-Z0-9-]+(?=&)|(?<=v\/)[^&\n]+(?=\?)|(?<=v=)[^&\n]+|(?<=embed/)[^&\n]+| (?<=youtu.be/)[^&\n]+#", $link, $matches);
-            $path = 'https://www.youtube.com/embed/' . $matches[0];
-
-            $video->setAddedBy($this->getUser())
-                ->setTrick($trick)
-                ->setType('Youtube')
-                ->setlink($path);
-            $em->persist($video);
-            $em->flush();
-
-            return $this->redirectToRoute('trick_show', [
-                'slug' => $slug
-            ]);;
+            $path = $this->mediaManager->parseLink($link);
+            $this->mediaManager->save($video, $trick, $path);
+            return $this->redirectToRoute('trick_show', ['slug' => $slug]);
         }
 
         return $this->render('trick/addVideo.html.twig', [

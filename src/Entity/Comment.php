@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CommentRepository;
+use App\Entity\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CommentRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  */
-class Comment
+class Comment implements EntityInterface
 {
     /**
      * @ORM\Id

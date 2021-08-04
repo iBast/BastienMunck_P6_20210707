@@ -22,8 +22,8 @@
 				</div>
 				{% include "trick/_deleteModal.html.twig" %}
 			{% endif %}
-			<img src="{{upload_directory ~ trick.mainPicture.path}}" alt="" class="cover">
 
+			<img src="{{upload_directory ~ trick.mainPicturepath}}" alt="" class="cover">
 		</section>
 		<h1>{{trick.name}}</h1>
 
@@ -31,7 +31,7 @@
 			class="trick-medias d-none d-md-block">
 			<!-- Button trigger modal -->
 
-			{% for picture in pictures %}
+			{% for picture in trick.pictures %}
 				<img type="button" src="{{ upload_directory ~ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
 				<div class="modal fade " id="staticBackdrop{{picture.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{picture.id}}" aria-hidden="true">
 					<div class="modal-dialog modal-lg">
@@ -48,7 +48,7 @@
 					</div>
 				</div>
 			{% endfor %}
-			{% for media in medias %}
+			{% for media in trick.media %}
 				<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 			{% endfor %}
@@ -68,10 +68,10 @@
 							</div>
 							<div class="modal-body">
 
-								{% for picture in pictures %}
+								{% for picture in trick.pictures %}
 									<img src="{{upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
 								{% endfor %}
-								{% for media in medias %}
+								{% for media in trick.media %}
 									<iframe class="img-fluid" width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 								{% endfor %}
 							</div>
@@ -119,7 +119,7 @@
 			{% endif %}
 
 
-			{% for comment in comments %}
+			{% for comment in trick.comments %}
 
 				<b class="text-muted">{{comment.author.nickname}}</b>
 				-
