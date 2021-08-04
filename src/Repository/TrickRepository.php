@@ -14,15 +14,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TrickRepository extends ServiceEntityRepository
 {
+    public const ALIAS = 't';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Trick::class);
     }
 
+
+    public function findAllForHome()
+    {
+        return $this->createQueryBuilder(self::ALIAS)
+            ->select(
+                self::ALIAS,
+                PictureRepository::ALIAS
+            )
+
+            ->leftJoin(self::ALIAS . '.mainPicture', PictureRepository::ALIAS)
+            ->orderBy(self::ALIAS . '.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */
     /*
+
     public function findByExampleField($value)
     {
         return $this->createQueryBuilder('t')

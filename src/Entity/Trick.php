@@ -2,17 +2,18 @@
 
 namespace App\Entity;
 
+
+use App\Entity\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
  */
-class Trick
+class Trick implements EntityInterface
 {
     /**
      * @ORM\Id
@@ -63,6 +64,7 @@ class Trick
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="trick", orphanRemoval=true)
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $comments;
 
@@ -78,7 +80,7 @@ class Trick
 
     /**
      * @ORM\OneToOne(targetEntity=Picture::class, inversedBy="mainToTrick")
-     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      */
     private $mainPicture;
 
@@ -278,5 +280,13 @@ class Trick
         $this->mainPicture = $mainPicture;
 
         return $this;
+    }
+
+    public function getMainPicturePath(): ?string
+    {
+        if ($this->mainPicture == null) {
+            return 'default.jpg';
+        }
+        return $this->mainPicture->getPath();
     }
 }

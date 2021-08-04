@@ -43,25 +43,32 @@ class TrickType extends AbstractType
                 'placeholder' => '-- Chose the trick group --',
                 'class' => Group::class,
                 'choice_label' => 'name'
-            ])
-            ->add('mainPicture', EntityType::class, [
-                'class' => Picture::class,
-                'query_builder' => function (PictureRepository $pr) use ($builder) {
-                    if ($builder->getData()->getId()) { // only for edit form of an existing trick
-                        return $pr->createQueryBuilder('p')
-                            ->where('p.trick = ' . $builder->getData()->getId())
-                            ->orderBy('p.id', 'ASC');
-                    } else { // for new trick form
-                        return null;
-                    }
-                },
-                'choice_label' => function (Picture $picture) {
-                    return '<img src="/upload/' . $picture->getpath() . '" alt="trick picture" class="img-fluid" type="button">';
-                },
-                'label_html' => true,
-                'multiple' => false,
-                'expanded' => true,
             ]);
+
+        if ($builder->getData()->getId() != null) {
+            $builder
+                ->add('mainPicture', EntityType::class, [
+                    'class' => Picture::class,
+                    'query_builder' => function (PictureRepository $pr) use ($builder) {
+                        if ($builder->getData()->getId()) { // only for edit form of an existing trick
+                            return $pr->createQueryBuilder('p')
+                                ->where('p.trick = ' . $builder->getData()->getId())
+                                ->orderBy('p.id', 'ASC');
+                        } else { // for new trick form
+                            return null;
+                        }
+                    },
+                    'choice_label' => function (Picture $picture) {
+                        return '<img src="/upload/' . $picture->getpath() . '" alt="trick picture" class="img-fluid" type="button">';
+                    },
+                    'label_html' => true,
+                    'multiple' => false,
+                    'expanded' => true,
+                    'attr' => [
+                        'riquired' => false
+                    ]
+                ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)

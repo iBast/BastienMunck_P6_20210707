@@ -14,6 +14,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PictureRepository extends ServiceEntityRepository
 {
+    public const ALIAS = 'p';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Picture::class);
