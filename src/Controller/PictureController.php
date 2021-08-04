@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Picture;
 use App\Form\PictureType;
+use App\Manager\PictureManager;
 use App\Repository\PictureRepository;
 use App\Repository\TrickRepository;
 use App\Service\UploadFileService;
@@ -12,17 +13,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PictureController extends AbstractController
 {
-    protected $em;
+    protected $pictureManager;
     protected $trickRepository;
 
-    public function __construct(EntityManagerInterface $em, TrickRepository $trickRepository)
+    public function __construct(PictureManager $pictureManager, TrickRepository $trickRepository)
     {
-        $this->em = $em;
+        $this->pictureManager = $pictureManager;
         $this->trickRepository = $trickRepository;
     }
 
@@ -36,16 +35,11 @@ class PictureController extends AbstractController
         if ($this->isCsrfTokenValid('delete-picture', $submittedToken)) {
             if ($picture->getId() === $picture->getTrick()->getMainPicture()->getId()) {
                 $this->addFlash('danger', "This picture is the main picture, before deleting it you must change the main picture");
-                return $this->redirectToRoute('trick_edit', [
-                    'slug' => $slug
-                ]);
+                return $this->redirectToRoute('trick_edit', ['slug' => $slug]);
             }
-            $this->em->remove($picture);
-            $this->em->flush();
+            $this->pictureManager->remove($picture);
             $this->addFlash('success', "Picture deleted");
-            return $this->redirectToRoute('trick_edit', [
-                'slug' => $slug
-            ]);
+            return $this->redirectToRoute('trick_edit', ['slug' => $slug]);
         }
         $this->addFlash('danger', "You can't delete this Picture");
         return $this->redirectToRoute('homepage');
@@ -58,22 +52,13 @@ class PictureController extends AbstractController
         $form = $this->createForm(PictureType::class);
         $trick = $this->trickRepository->find($id);
         $slug = $trick->getSlug();
-
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('file')->getData();
             $fileName = $uploadFileService->upload($file);
-            $picture->setAddedBy($this->getUser())
-                ->setTrick($trick)
-                ->setMainToTrick(null)
-                ->setPath($fileName);
-            $em->persist($picture);
-            $em->flush();
-
-            return $this->redirectToRoute('trick_show', [
-                'slug' => $slug
-            ]);;
+            $picture->setTrick($trick)->setPath($fileName);
+            $this->pictureManager->save($picture);
+            return $this->redirectToRoute('trick_show', ['slug' => $slug]);;
         }
 
         return $this->render('trick/addPicture.html.twig', [

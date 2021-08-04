@@ -63,7 +63,8 @@ class MediaController extends AbstractController
                 return $this->redirectToRoute('video_add', ['id' => $trick->getId()]);
             }
             $path = $this->mediaManager->parseLink($link);
-            $this->mediaManager->save($video, $trick, $path);
+            $video->setTrick($trick)->setLink($path);
+            $this->mediaManager->save($video);
             return $this->redirectToRoute('trick_show', ['slug' => $slug]);
         }
         return $this->render('trick/addVideo.html.twig', [
@@ -74,7 +75,7 @@ class MediaController extends AbstractController
     }
 
     #[Route('/video/edit/{id}', name: 'video_edit')]
-    public function edit($id, Request $request, EntityManagerInterface $em)
+    public function edit($id, Request $request)
     {
         $video = $this->mediaRepository->find($id);
         $form = $this->createForm(MediaType::class, $video);
@@ -89,7 +90,8 @@ class MediaController extends AbstractController
                 return $this->redirectToRoute('video_add', ['id' => $trick->getId()]);
             }
             $path = $this->mediaManager->parseLink($link);
-            $this->mediaManager->save($video, $trick, $path);
+            $video->setTrick($trick)->setLink($path);
+            $this->mediaManager->save($video);
             return $this->redirectToRoute('trick_show', ['slug' => $slug]);
         }
 

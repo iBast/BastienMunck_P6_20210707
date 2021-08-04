@@ -2,23 +2,33 @@
 
 namespace App\Manager;
 
+use App\Entity\EntityInterface;
 use App\Entity\Media;
 use App\Entity\Trick;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
-class MediaManager
+class MediaManager extends AbstractManager
 {
     protected $mediaRepository;
-    protected $em;
+    protected $manager;
     protected $security;
 
-    public function __construct(MediaRepository $mediaRepository, EntityManagerInterface $em, Security $security)
+    public function __construct(MediaRepository $mediaRepository, EntityManagerInterface $manager, Security $security)
     {
         $this->mediaRepository = $mediaRepository;
-        $this->em = $em;
         $this->security = $security;
+        parent::__construct($manager);
+    }
+
+    public function initialise(EntityInterface $entity): void
+    {
+        /** @var Media */
+        $video = $entity;
+
+        $video->setAddedBy($this->security->getUser())
+            ->setType('Youtube');
     }
 
     public function parseLink($link)
@@ -29,18 +39,10 @@ class MediaManager
 
     public function verifyLink($link)
     {
-        if (strpos($link, 'youtube') == false) {
-            return false;
+        if (strpos($link, 'youtube') > 1) {
+            return true;
         }
-    }
 
-    public function save(Media $video, Trick $trick, $link)
-    {
-        $video->setAddedBy($this->security->getUser())
-            ->setTrick($trick)
-            ->setType('Youtube')
-            ->setlink($link);
-        $this->em->persist($video);
-        $this->em->flush();
+        return false;
     }
 }
