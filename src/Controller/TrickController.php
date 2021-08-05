@@ -28,7 +28,8 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/{slug}', name: 'trick_show', priority: -1)]
-    public function show($slug, Request $request): Response
+    #[Route('/trick/{slug}/comments/{limit}', name: 'trick_comment_limit', methods: ['GET'])]
+    public function show($slug, Request $request, $limit = 5): Response
     {
         $comment = new Comment;
         $form = $this->createForm(CommentType::class, $comment);
@@ -46,10 +47,10 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('trick_show', ['slug' => $trick->getSlug()]);
         }
 
-        return $this->render('trick/index.html.twig', [
-            'trick' => $trick,
-            'formView' => $formView
-        ]);
+        $options = $this->trickManager->paginate($trick->getId(), $limit, 1, 5);
+        $options2 = ['trick' => $trick, 'formView' => $formView];
+        $options = array_merge($options, $options2);
+        return $this->render('trick/index.html.twig', $options);
     }
 
     #[Route('/trick/new', name: 'trick_new')]

@@ -119,9 +119,9 @@
 			{% endif %}
 
 
-			{% for comment in trick.comments %}
+			{% for comment in comments %}
 
-				<b class="text-muted">{{comment.author.nickname}}</b>
+				<b class="text-muted" id="{{ loop.index }}">{{comment.author.nickname}}</b>
 				-
 				<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
 					:</small>
@@ -135,6 +135,13 @@
 					</div>
 				</div>
 			{% endfor %}
+			{% if isLastPage == false %}
+				<div class="d-flex justify-content-center mb-3">
+					<a href="{{ path('trick_comment_limit', {'limit': nextpage, 'slug': trick.slug}) }}#{{limit}}" class="btn btn-outline-primary" id="loadmore">
+						<i class="fas fa-spinner fa-spin"></i>
+						Load more</a>
+				</div>
+			{% endif %}
 		</section>
 	</div>
 {% endblock %}
