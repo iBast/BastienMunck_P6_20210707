@@ -57,6 +57,9 @@ class PictureController extends AbstractController
             $file = $form->get('file')->getData();
             $fileName = $uploadFileService->upload($file);
             $picture->setTrick($trick)->setPath($fileName);
+            if ($trick->getMainPicture() === null) {
+                $trick->setMainPicture($picture);
+            }
             $this->pictureManager->save($picture);
             return $this->redirectToRoute('trick_show', ['slug' => $slug]);;
         }
