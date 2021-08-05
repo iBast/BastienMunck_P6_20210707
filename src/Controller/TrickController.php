@@ -2,18 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use App\Entity\Trick;
-use App\Form\CommentType;
+use App\Entity\Comment;
 use App\Form\TrickType;
-use App\Repository\TrickRepository;
+use App\Form\CommentType;
 use App\Manager\TrickManager;
+use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TrickController extends AbstractController
 {
@@ -55,6 +56,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/new', name: 'trick_new')]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request)
     {
         $trick = new Trick;
@@ -77,6 +79,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/edit/{slug}', name: 'trick_edit')]
+    #[IsGranted('ROLE_USER')]
     public function edit($slug, Request $request)
     {
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
@@ -97,6 +100,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'trick_delete')]
+    #[IsGranted('ROLE_USER')]
     public function delete($id, Request $request)
     {
         $trick = $this->trickRepository->findOneBy(['id' => $id]);
@@ -113,6 +117,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/comment/delete/{id}', name: 'comment_delete')]
+    #[IsGranted('ROLE_USER')]
     public function deleteComment($id, Request $request, CommentRepository $commentRepository)
     {
         $comment = $commentRepository->find(['id' => $id]);

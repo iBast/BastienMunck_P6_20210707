@@ -21,16 +21,20 @@
 		<h1>Hello
 			{{ user.nickname}}!</h1>
 
+		{{form_start(form)}}
+
+		{{ form_row(form.nickname) }}
+
+		{{ form_row(form.email) }}
 		<ul class="list-group">
-			<li class="list-group-item d-flex justify-content-between align-items-center">Your username:
-				<span>{{ user.nickname }}</span>
-			</li>
-			<li class="list-group-item d-flex justify-content-between align-items-center">Your email:
-				<span>{{ user.email }}</span>
-			</li>
 			<li class="list-group-item d-flex justify-content-between align-items-center">Your password:
 				<a href="{{ path('app_forgot_password_request') }}" class="badge bg-info rounded-pill">Reset your password</a>
 			</li>
 		</ul>
+		<div class="mt-4 d-flex flex-row-reverse">
+			<button type="submit" class="btn btn-success">Update account</button>
+
+		</div>
+		{{form_end(form)}}
 	</div>
 {% endblock %}

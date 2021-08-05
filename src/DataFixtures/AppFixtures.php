@@ -39,7 +39,6 @@ class AppFixtures extends Fixture
             $user->setEmail("user$u@gmail.com")
                 ->setPassword($hash)
                 ->setNickname($faker->name())
-                ->setProfilePic($faker->imageUrl)
                 ->setRoles(['ROLE_USER']);
 
             $users[] = $user;
