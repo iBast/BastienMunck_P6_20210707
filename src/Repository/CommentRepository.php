@@ -14,6 +14,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CommentRepository extends ServiceEntityRepository
 {
+    public const ALIAS = 'c';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Comment::class);
