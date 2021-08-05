@@ -8,6 +8,7 @@ use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\TrickRepository;
 use App\Manager\TrickManager;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -106,6 +107,23 @@ class TrickController extends AbstractController
             $this->trickManager->remove($trick);
             $this->addFlash('success', "Trick deleted");
             return $this->redirectToRoute('homepage');
+        }
+        $this->addFlash('danger', "You can't delete this trick");
+        return $this->redirectToRoute('homepage');
+    }
+
+    #[Route('/comment/delete/{id}', name: 'comment_delete')]
+    public function deleteComment($id, Request $request, CommentRepository $commentRepository)
+    {
+        $comment = $commentRepository->find(['id' => $id]);
+        $submittedToken = $request->request->get('token');
+        $trick = $this->trickRepository->find($comment->getTrick());
+
+        // 'delete-item' is the same value used in the template to generate the token
+        if ($this->isCsrfTokenValid('delete-comment', $submittedToken)) {
+            $this->trickManager->remove($comment);
+            $this->addFlash('success', "Comment deleted");
+            return $this->redirectToRoute('trick_show', ['slug' => $trick->getSlug()]);
         }
         $this->addFlash('danger', "You can't delete this trick");
         return $this->redirectToRoute('homepage');
