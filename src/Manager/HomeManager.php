@@ -30,7 +30,7 @@ class HomeManager extends AbstractManager
             PictureRepository::ALIAS
         )
             ->leftJoin(TrickRepository::ALIAS . '.mainPicture', PictureRepository::ALIAS)
-            ->orderBy(TrickRepository::ALIAS . '.name', 'ASC');
+            ->orderBy(TrickRepository::ALIAS . '.name', 'DESC');
 
         return $this->paginator->render('tricks', $querry, $limit, $page, $increment);
     }

@@ -5,13 +5,14 @@ namespace App\Controller;
 use App\Entity\Picture;
 use App\Form\PictureType;
 use App\Manager\PictureManager;
-use App\Repository\PictureRepository;
-use App\Repository\TrickRepository;
 use App\Service\UploadFileService;
+use App\Repository\TrickRepository;
+use App\Repository\PictureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class PictureController extends AbstractController
@@ -26,6 +27,7 @@ class PictureController extends AbstractController
     }
 
     #[Route('/picture/delete/{id}', name: 'picture_delete')]
+    #[IsGranted('ROLE_USER')]
     public function delete($id, Request $request, PictureRepository $pictureRepository): Response
     {
         $picture = $pictureRepository->findOneBy(['id' => $id]);
@@ -46,7 +48,8 @@ class PictureController extends AbstractController
     }
 
     #[Route('/picture/add/{id}', name: 'picture_add')]
-    public function add($id, Request $request, UploadFileService $uploadFileService, EntityManagerInterface $em)
+    #[IsGranted('ROLE_USER')]
+    public function add($id, Request $request, UploadFileService $uploadFileService)
     {
         $picture = new Picture;
         $form = $this->createForm(PictureType::class);
@@ -57,6 +60,9 @@ class PictureController extends AbstractController
             $file = $form->get('file')->getData();
             $fileName = $uploadFileService->upload($file);
             $picture->setTrick($trick)->setPath($fileName);
+            if ($trick->getMainPicture() === null) {
+                $trick->setMainPicture($picture);
+            }
             $this->pictureManager->save($picture);
             return $this->redirectToRoute('trick_show', ['slug' => $slug]);;
         }

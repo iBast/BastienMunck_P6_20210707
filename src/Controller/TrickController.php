@@ -2,17 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use App\Entity\Trick;
-use App\Form\CommentType;
+use App\Entity\Comment;
 use App\Form\TrickType;
-use App\Repository\TrickRepository;
+use App\Form\CommentType;
 use App\Manager\TrickManager;
+use App\Repository\TrickRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TrickController extends AbstractController
 {
@@ -54,6 +56,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/new', name: 'trick_new')]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request)
     {
         $trick = new Trick;
@@ -76,6 +79,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/edit/{slug}', name: 'trick_edit')]
+    #[IsGranted('ROLE_USER')]
     public function edit($slug, Request $request)
     {
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
@@ -96,6 +100,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'trick_delete')]
+    #[IsGranted('ROLE_USER')]
     public function delete($id, Request $request)
     {
         $trick = $this->trickRepository->findOneBy(['id' => $id]);
@@ -106,6 +111,24 @@ class TrickController extends AbstractController
             $this->trickManager->remove($trick);
             $this->addFlash('success', "Trick deleted");
             return $this->redirectToRoute('homepage');
+        }
+        $this->addFlash('danger', "You can't delete this trick");
+        return $this->redirectToRoute('homepage');
+    }
+
+    #[Route('/comment/delete/{id}', name: 'comment_delete')]
+    #[IsGranted('ROLE_USER')]
+    public function deleteComment($id, Request $request, CommentRepository $commentRepository)
+    {
+        $comment = $commentRepository->find(['id' => $id]);
+        $submittedToken = $request->request->get('token');
+        $trick = $this->trickRepository->find($comment->getTrick());
+
+        // 'delete-item' is the same value used in the template to generate the token
+        if ($this->isCsrfTokenValid('delete-comment', $submittedToken)) {
+            $this->trickManager->remove($comment);
+            $this->addFlash('success', "Comment deleted");
+            return $this->redirectToRoute('trick_show', ['slug' => $trick->getSlug()]);
         }
         $this->addFlash('danger', "You can't delete this trick");
         return $this->redirectToRoute('homepage');

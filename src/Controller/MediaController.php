@@ -8,6 +8,7 @@ use App\Repository\MediaRepository;
 use App\Repository\TrickRepository;
 use App\Manager\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,20 +16,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MediaController extends AbstractController
 {
-    protected $em;
     protected $mediaRepository;
     protected $trickRepository;
     protected $mediaManager;
 
-    public function __construct(EntityManagerInterface $em, MediaRepository $mediaRepository, TrickRepository $trickRepository, MediaManager  $mediaManager)
+    public function __construct(MediaRepository $mediaRepository, TrickRepository $trickRepository, MediaManager  $mediaManager)
     {
-        $this->em = $em;
         $this->mediaRepository = $mediaRepository;
         $this->trickRepository = $trickRepository;
         $this->mediaManager = $mediaManager;
     }
 
     #[Route('/video/delete/{id}', name: 'media_delete')]
+    #[IsGranted('ROLE_USER')]
     public function delete($id, Request $request): Response
     {
         $media = $this->mediaRepository->findOneBy(['id' => $id]);
@@ -47,7 +47,8 @@ class MediaController extends AbstractController
     }
 
     #[Route('/video/add/{id}', name: 'video_add')]
-    public function add($id, Request $request, EntityManagerInterface $em)
+    #[IsGranted('ROLE_USER')]
+    public function add($id, Request $request)
     {
         $video = new Media;
         $form = $this->createForm(MediaType::class, $video);
@@ -75,6 +76,7 @@ class MediaController extends AbstractController
     }
 
     #[Route('/video/edit/{id}', name: 'video_edit')]
+    #[IsGranted('ROLE_USER')]
     public function edit($id, Request $request)
     {
         $video = $this->mediaRepository->find($id);

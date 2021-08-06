@@ -53,11 +53,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     private $nickname;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $profilePic = 'https://via.placeholder.com/640x480.png/00bb66?text=consequatur';
-
-    /**
      * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="owner")
      */
     private $tricks;
@@ -185,18 +180,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
     public function setNickname(string $nickname): self
     {
         $this->nickname = $nickname;
-
-        return $this;
-    }
-
-    public function getProfilePic(): ?string
-    {
-        return $this->profilePic;
-    }
-
-    public function setProfilePic(string $profilePic): self
-    {
-        $this->profilePic = $profilePic;
 
         return $this;
     }

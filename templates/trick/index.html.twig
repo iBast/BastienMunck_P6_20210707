@@ -98,7 +98,7 @@
 		<hr>
 		<section class="container mt-3">
 
-			{% if app.user %}
+			{% if app.user and is_granted('ROLE_USER')%}
 				<div class="mb-4">
 					{{ form_start(formView) }}
 
@@ -120,14 +120,25 @@
 
 
 			{% for comment in comments %}
+				<div class="d-flex justify-content-between">
+					<div>
+						<b class="text-muted" id="{{ loop.index }}">{{comment.author.nickname}}</b>
+						-
+						<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
+							:</small>
+					</div>
+					{% if comment.author == app.user %}
+						<form
+							action="{{ path('comment_delete', {'id': comment.id}) }}" method="post" id="delete-comment">
+							{# the argument of csrf_token() is an arbitrary string used to generate the token #}
+							<input type="hidden" name="token" value="{{ csrf_token('delete-comment') }}"/>
 
-				<b class="text-muted" id="{{ loop.index }}">{{comment.author.nickname}}</b>
-				-
-				<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
-					:</small>
-				{% if comment.author == app.user %}
-					<span>c'est mon commentaire</span>
-				{% endif %}
+							<button type="submit" class="btn btn-link" for="delete-trick">
+								<i class="fas fa-trash"></i>
+							</button>
+						</form>
+					{% endif %}
+				</div>
 				<div class="card border-primary mb-3 mx-auto">
 
 					<div class="card-body">

@@ -6,7 +6,7 @@ use App\Entity\EntityInterface;
 
 interface ManagerInterface
 {
-    public function initialise(EntityInterface $entity): void;
+    public function initialise(EntityInterface $entity);
 
     public function save(EntityInterface $entity): void;
 
