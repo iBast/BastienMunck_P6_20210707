@@ -28,4 +28,12 @@ abstract class AbstractManager implements ManagerInterface
         $this->manager->remove($entity);
         $this->manager->flush();
     }
+
+    public function error($type, $message, $redirection, $options = null)
+    {
+        $type = $type;
+        $message = $message;
+        $redirection = $redirection;
+        $options = $options;
+    }
 }
