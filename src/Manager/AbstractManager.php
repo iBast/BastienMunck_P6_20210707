@@ -8,25 +8,25 @@ use Doctrine\ORM\EntityManagerInterface;
 abstract class AbstractManager implements ManagerInterface
 {
 
-    protected $manager;
+    protected $em;
 
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct(EntityManagerInterface $em)
     {
-        $this->manager = $manager;
+        $this->em = $em;
     }
 
     public function save(EntityInterface $entity): void
     {
         $this->initialise($entity);
 
-        $this->manager->persist($entity);
-        $this->manager->flush();
+        $this->em->persist($entity);
+        $this->em->flush();
     }
 
     public function remove(EntityInterface $entity): void
     {
-        $this->manager->remove($entity);
-        $this->manager->flush();
+        $this->em->remove($entity);
+        $this->em->flush();
     }
 
     public function error($type, $message, $redirection, $options = null)

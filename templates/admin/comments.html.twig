@@ -27,7 +27,7 @@
 								<td>{{ comment.author.nickname }}</td>
 								<td>{{ comment.createdAt | date('d/m/Y H:i')}}</td>
 								<td>
-									<a href="">
+									<a href="{{ path('admin_delete', {'controller': 'comment', 'id': comment.id}) }}">
 										<i class="fas fa-trash"></i>
 									</a>
 
@@ -37,12 +37,16 @@
 					</tbody>
 				</table>
 				<div class="d-flex justify-content-between mb-3">
-					<a href="#" class="btn btn-info">
-						<i class="fas fa-chevron-left"></i>
-						Previous page</a>
-					<a href="#" class="btn btn-info ms-auto">Next page
-						<i class="fas fa-chevron-right"></i>
-					</a>
+					{% if page > 1 %}
+						<a href="{{ path('admin_comment_page', {'page' : page - 1}) }}" class="btn btn-info">
+							<i class="fas fa-chevron-left"></i>
+							Previous page</a>
+					{% endif %}
+					{% if page < lastPageNb %}
+						<a href="{{ path('admin_comment_page', {'page' : page + 1}) }}" class="btn btn-info ms-auto">Next page
+							<i class="fas fa-chevron-right"></i>
+						</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>
