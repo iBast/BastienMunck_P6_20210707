@@ -54,6 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     /**
      * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="owner")
+     * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      */
     private $tricks;
 
@@ -74,6 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, EntityI
 
     /**
      * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="addedBy")
+     * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      */
     private $pictures;
 

@@ -31,13 +31,13 @@ class Picture implements EntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="pictures", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      */
     private $addedBy;
 
     /**
      * @ORM\OneToOne(targetEntity=Trick::class, mappedBy="mainPicture", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      */
     private $mainToTrick;
 

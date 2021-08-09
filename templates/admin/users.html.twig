@@ -33,10 +33,11 @@
 									{% endif %}
 								</td>
 								<td>
-									<a href="{{ path('admin_delete', {'controller': 'user', 'id': user.id}) }}">
-										<i class="fas fa-trash"></i>
-									</a>
-
+									{% if not app.user %}
+										<a href="{{ path('admin_delete', {'controller': 'user', 'id': user.id}) }}">
+											<i class="fas fa-trash"></i>
+										</a>
+									{% endif %}
 								</td>
 							</tr>
 						{% endfor %}

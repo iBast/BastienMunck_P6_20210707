@@ -52,6 +52,6 @@ class AdminController extends AbstractController
     {
         $this->adminManager->delete($controller, $id);
         $this->addFlash('success', 'The item has been deleted');
-        return $this->redirectToRoute('admin_comment');
+        return $this->redirectToRoute('admin_' . $controller);
     }
 }

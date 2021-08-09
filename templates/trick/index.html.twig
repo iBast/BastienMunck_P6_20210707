@@ -87,7 +87,12 @@
 		</section>
 		<div class="d-flex justify-content-around flex-wrap mt-3  mb-5">
 			<div class="badge bg-info mt-3">Added by :
-				{{trick.owner.nickname}}</div>
+				{% if trick.owner.nickname is defined %}
+					{{trick.owner.nickname}}
+				{% else %}
+					Deleted user
+				{% endif %}
+			</div>
 			<div class="badge bg-info mt-3">Group:
 				{{trick.type.name}}</div>
 			<div class="badge bg-info mt-3">Added on :

@@ -47,7 +47,7 @@ class Trick implements EntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tricks")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      */
     private $owner;
 
