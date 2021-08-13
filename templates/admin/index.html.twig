@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminController!
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-3">
+		<div class="row">
+			{% include "shared/_admin_menu.html.twig" %}
+			<div class="col-8 border col-md-10">
+				<h1>SNOWTRICKS ADMIN</h1>
+				<div class="row">
+					<div class="col-6 col-sm-8 col-md-4 ">
+						<div class="card border-warning mb-3">
+							<div class="card-header">Users registrated</div>
+							<div class="card-body">
+								<h2 class="card-title text-center">{{counts.users}}</h2>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="col-6 col-sm-8 col-md-4">
+						<div class="card border-info mb-3">
+							<div class="card-header">Tricks posted</div>
+							<div class="card-body">
+								<h2 class="card-title text-center">{{counts.tricks}}</h2>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-6 col-sm-8 col-md-4">
+						<div class="card border-success mb-3">
+							<div class="card-header">Comments posted</div>
+							<div class="card-body">
+								<h2 class="card-title text-center">{{counts.comments}}</h2>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

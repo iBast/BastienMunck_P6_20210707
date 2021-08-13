@@ -29,17 +29,21 @@
 								<a class="card-text" href="{{ path('trick_show', {'slug': trick.slug}) }}">{{trick.name}}</a>
 							</div>
 							{% if app.user %}
-								<div class="ms-auto p-2">
-									<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
-										<i class="fas fa-pen"></i>
-									</a>
-								</div>
-								<div class="ml-auto p-2">
-									<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
-										<i class="fas fa-trash"></i>
-									</a>
-									{% include "trick/_deleteModal.html.twig" %}
-								</div>
+								{% if trick | trickCanUpdate %}
+									<div class="ms-auto p-2">
+										<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
+											<i class="fas fa-pen"></i>
+										</a>
+									</div>
+								{% endif %}
+								{% if trick | trickCanDelete %}
+									<div class="ml-auto p-2">
+										<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+											<i class="fas fa-trash"></i>
+										</a>
+										{% include "trick/_deleteModal.html.twig" %}
+									</div>
+								{% endif %}
 							{% endif %}
 						</div>
 					</div>

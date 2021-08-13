@@ -6,6 +6,7 @@ use App\Entity\Trick;
 use App\Entity\Comment;
 use App\Form\TrickType;
 use App\Form\CommentType;
+use App\Security\TrickVoter;
 use App\Manager\TrickManager;
 use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
@@ -79,10 +80,10 @@ class TrickController extends AbstractController
     }
 
     #[Route('/edit/{slug}', name: 'trick_edit')]
-    #[IsGranted('ROLE_USER')]
     public function edit($slug, Request $request)
     {
         $trick = $this->trickRepository->findOneBy(['slug' => $slug]);
+        $this->denyAccessUnlessGranted(TrickVoter::UPDATE, $trick);
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -103,7 +104,7 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function delete($id, Request $request)
     {
-        $trick = $this->trickRepository->findOneBy(['id' => $id]);
+        $trick = $this->trickRepository->find($id);
         $submittedToken = $request->request->get('token');
 
         // 'delete-item' is the same value used in the template to generate the token
@@ -120,7 +121,7 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function deleteComment($id, Request $request, CommentRepository $commentRepository)
     {
-        $comment = $commentRepository->find(['id' => $id]);
+        $comment = $commentRepository->find($id);
         $submittedToken = $request->request->get('token');
         $trick = $this->trickRepository->find($comment->getTrick());
 
