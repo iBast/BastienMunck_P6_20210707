@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 class TrickManager extends AbstractManager
 {
     protected $security;
-    protected $manager;
+    protected $em;
     protected $slugger;
     protected $commentRepository;
     protected $paginator;
@@ -33,7 +33,7 @@ class TrickManager extends AbstractManager
 
     public function __construct(
         Security $security,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $em,
         SluggerInterface $slugger,
         CommentRepository $commentRepository,
         PaginatorService $paginator,
@@ -48,7 +48,7 @@ class TrickManager extends AbstractManager
         $this->trickRepository = $trickRepository;
         $this->flashBag = $flashBag;
         $this->router = $router;
-        parent::__construct($manager);
+        parent::__construct($em);
     }
 
     public function initialise(EntityInterface $entity)
@@ -56,41 +56,16 @@ class TrickManager extends AbstractManager
         /** @var Trick */
         $trick = $entity;
 
-        if ($entity->getid() == null) {
-            $nameExist = $this->trickRepository->findOneBy(['name' => $trick->getName()]);
-            $slugExist = $this->trickRepository->findOneBy(['slug' => $trick->getSlug()]);
+        $trick->setName($this->getUniqueName($trick));
+        $trick->setSlug($this->slugger->slug($trick->getName()));
+        if ($trick->getid() == null) {
 
             $trick->setCreatedAt(new DateTime())
                 ->setUpdatedAt(new DateTime())
                 ->setOwner($this->security->getUser())
-                ->setSlug($this->slugger->slug($trick->getName()))
                 ->setMainPicture(null);
-
-            if ($nameExist->getName() === $trick->getName()) {
-                $this->flashBag->add('danger', 'This name already exist, please choose an other name');
-                $response = new RedirectResponse($this->router->generate('trick_new'));
-                return $response->send();
-            }
-            if ($slugExist->getSlug() !== $trick->getSlug()) {
-                $this->flashBag->add('danger', 'This slug already exist, please try again later');
-                $response = new RedirectResponse('trick_new');
-                return $response->send();
-            }
         } else {
-            $nameExist = $this->trickRepository->findOneBy(['name' => $trick->getName()]);
-            $slugExist = $this->trickRepository->findOneBy(['slug' => $trick->getSlug()]);
-            if ($nameExist->getId() != $trick->getId()  && $nameExist->getName() === $trick->getName()) {
-                $this->flashBag->add('danger', 'This name already exist, please choose an other name');
-                $response = new RedirectResponse($this->router->generate('trick_edit', ['slug' => $trick->getSlug()]));
-                return $response->send();
-            }
-            if ($nameExist->getId() != $trick->getId()  && $slugExist->getSlug() !== $trick->getSlug()) {
-                $this->flashBag->add('danger', 'This slug already exist, please try again later');
-                $response = new RedirectResponse($this->router->generate('trick_edit', ['slug' => $trick->getSlug()]));
-                return $response->send();
-            }
-            $trick->setUpdatedAt(new DateTime())
-                ->setSlug($this->slugger->slug($trick->getName()));
+            $trick->setUpdatedAt(new DateTime());
         }
     }
 
@@ -99,8 +74,8 @@ class TrickManager extends AbstractManager
         $comment->setAuthor($this->security->getUser())
             ->setCreatedAt(new DateTime('now', new DateTimeZone('Europe/Paris')))
             ->setTrick($trick);
-        $this->manager->persist($comment);
-        $this->manager->flush();
+        $this->em->persist($comment);
+        $this->em->flush();
     }
 
     public function paginate($trickId, int $limit = 10, int $page = 1, $increment = 10)
@@ -111,5 +86,43 @@ class TrickManager extends AbstractManager
             ->orderBy(CommentRepository::ALIAS . '.createdAt', 'DESC');
 
         return $this->paginator->render('comments', $querry, $limit, $page, $increment);
+    }
+
+    public function getUniqueName($entity)
+    {
+        /** @var Trick */
+        $trick = $entity;
+        $name = $trick->getName();
+
+        $count = 1;
+        $nameUnique = false;
+        while ($nameUnique == false) {
+            if ($this->trickRepository->findCountForName($name, $trick->getId())) {
+                $name .= ' ' . $count;
+                $count++;
+            } else {
+                $nameUnique = true;
+            }
+        }
+        return $name;
+    }
+
+    public function getUniqueSlug($entity)
+    {
+        /** @var Trick */
+        $trick = $entity;
+        $slug = $trick->getSlug();
+
+        $count = 1;
+        $slugUnique = false;
+        while ($slugUnique == false) {
+            if ($this->trickRepository->findCountForName($slug, $trick->getId())) {
+                $slug .= $count;
+                $count++;
+            } else {
+                $slugUnique = true;
+            }
+        }
+        return $slug;
     }
 }

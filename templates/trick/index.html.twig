@@ -8,19 +8,23 @@
 	<div class="trick-container">
 		<section class="mb-2">
 			{% if app.user %}
-				<div class="d-flex trick-toolbox">
-					<div class="ms-auto p-2">
-						<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
-							<i class="fas fa-pen"></i>
-						</a>
+				{% if trick | trickCanUpdate %}
+					<div class="d-flex trick-toolbox">
+						<div class="ms-auto p-2">
+							<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
+								<i class="fas fa-pen"></i>
+							</a>
+						</div>
+					{% endif %}
+					{% if trick | trickCanDelete %}
+						<div class="ms-auto p-2">
+							<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</div>
 					</div>
-					<div class="ms-auto p-2">
-						<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
-							<i class="fas fa-trash"></i>
-						</a>
-					</div>
-				</div>
-				{% include "trick/_deleteModal.html.twig" %}
+					{% include "trick/_deleteModal.html.twig" %}
+				{% endif %}
 			{% endif %}
 
 			<img src="{{upload_directory ~ trick.mainPicturepath}}" alt="" class="cover">

@@ -35,6 +35,22 @@ class TrickRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findCountForName(string $name, $id = null)
+    {
+        $builder = $this->createQueryBuilder(self::ALIAS)
+            ->select("COUNT('name')");
+
+        if ($id === null) {
+            $builder->where(self::ALIAS . '.name = :name')
+                ->setParameter('name', $name);
+        } else {
+            $builder->where(self::ALIAS . '.name = :name')
+                ->andWhere(self::ALIAS . '.id != :id')
+                ->setParameters(['name' => $name, 'id' => $id]);
+        }
+        return $builder->getQuery()->getSingleScalarResult();
+    }
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */
