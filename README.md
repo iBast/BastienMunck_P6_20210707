@@ -33,11 +33,14 @@ DATABASE_URL="mysql://user:password@host/db?serverVersion=X.X.XX"
     * you can use the sql file in the repository 
     * or you can install the db with doctrine 
 
-        if the database does not exist, create it with the following command in the project directory:
+        if the database does not exist, create it with the following command in the project directory
+
             ```console
             php bin/console doctrine:database:create
             ```
+
         then
+        
             ```console
             php bin/console doctrine:migration:migrate
             ```
