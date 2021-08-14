@@ -35,15 +35,15 @@ DATABASE_URL="mysql://user:password@host/db?serverVersion=X.X.XX"
 
         if the database does not exist, create it with the following command in the project directory
 
-            ```console
-            php bin/console doctrine:database:create
-            ```
+```console
+php bin/console doctrine:database:create
+```
 
         then
-        
-            ```console
-            php bin/console doctrine:migration:migrate
-            ```
+
+```console
+php bin/console doctrine:migration:migrate
+```
 
 * Install fixtures to have first contents and the admin account
 ```console
