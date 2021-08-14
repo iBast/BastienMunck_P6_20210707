@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminController!
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-3">
+		<div class="row">
+			{% include "shared/_admin_menu.html.twig" %}
+
+			<div class="col-8 border col-md-10">
+				<h1>Users</h1>
+
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Username</th>
+							<th>Email</th>
+							<th>is verified</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody class="table-light">
+						{% for user in users %}
+							<tr>
+								<td>{{ user.nickname}}</td>
+								<td>{{ user.email }}</td>
+								<td>
+									{% if user.isVerified %}
+										Yes
+									{% else %}
+										No
+									{% endif %}
+								</td>
+								<td>
+									{% if user != app.user %}
+										<a href="{{ path('admin_delete', {'controller': 'user', 'id': user.id}) }}">
+											<i class="fas fa-trash"></i>
+										</a>
+									{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				<div class="d-flex justify-content-between mb-3">
+					{% if page > 1 %}
+						<a href="{{ path('admin_user_page', {'page' : page - 1}) }}" class="btn btn-info">
+							<i class="fas fa-chevron-left"></i>
+							Previous page</a>
+					{% endif %}
+					{% if page < lastPageNb %}
+						<a href="{{ path('admin_user_page', {'page' : page + 1}) }}" class="btn btn-info ms-auto">Next page
+							<i class="fas fa-chevron-right"></i>
+						</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>{% endblock %}

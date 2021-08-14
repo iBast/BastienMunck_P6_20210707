@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Add a Video
+{% endblock %}
+
+{% block body %}
+	<div class="trick-container p-3">
+		<section class="mb-2">
+			<h1 class="text-center">Add new video for :
+				<br>
+				{{ trick.name}}
+			</h1>
+		</section>
+
+		<p>Videos should came from YouTube</p>
+		{{ form_start(form) }}
+		{{ form_errors(form) }}
+		{{ form_widget(form.link) }}
+		<button type="submit" class="btn btn-success mt-3">Add video</button>
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

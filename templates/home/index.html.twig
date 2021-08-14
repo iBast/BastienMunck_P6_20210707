@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Snowtricks
+{% endblock %}
+
+{% block body %}
+	<div class="main-img">
+		<img src="/img/main.jpg" alt="photo" class="bg-image">
+		<div class="title">
+			<h1>SNOWTRICKS</h1>
+			<h2>Snowboard community site</h2>
+		</div>
+		<div class="arrow-down">
+			<a href="#tricks">
+				<i class="fas fa-arrow-down fa-3x"></i>
+			</a>
+		</div>
+	</div>
+	<div class="container tricks pt-5" id="tricks">
+
+		<div class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1">
+			{% for trick in tricks %}
+				<div class="col mt-2 mb-2">
+					<div class="card h-100" id="{{ loop.index }}">
+
+						<img src="{{ upload_directory ~ trick.mainPicturepath}}" class="img-fluid" alt="image du produit">
+						<div class="card-body d-flex">
+							<div class="mt-auto mr-auto p-2">
+								<a class="card-text" href="{{ path('trick_show', {'slug': trick.slug}) }}">{{trick.name}}</a>
+							</div>
+							{% if app.user %}
+								{% if trick | trickCanUpdate %}
+									<div class="ms-auto p-2 mt-auto">
+										<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
+											<i class="fas fa-pen"></i>
+										</a>
+									</div>
+								{% endif %}
+								{% if trick | trickCanDelete %}
+									<div class="ml-auto p-2 mt-auto">
+										<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+											<i class="fas fa-trash"></i>
+										</a>
+										{% include "trick/_deleteModal.html.twig" %}
+									</div>
+								{% endif %}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		{% if isLastPage == false %}
+			<div class="d-flex justify-content-center">
+				<a href="{{ path('homepage_with_limit', {'limit': nextpage}) }}#{{limit}}" class="btn btn-outline-primary" id="loadmore">
+					<i class="fas fa-spinner fa-spin"></i>
+					Load more</a>
+			</div>
+		{% endif %}
+
+	</div>
+	{% if limit > 15 %}
+		<div class="arrow-up pb-5">
+			<a href="#tricks" class="pb-2">
+				<i class="fas fa-arrow-up fa-3x"></i>
+			</a>
+		</div>
+	{% endif %}
+{% endblock %}

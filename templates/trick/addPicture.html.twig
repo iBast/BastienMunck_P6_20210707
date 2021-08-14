@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Add a picture
+{% endblock %}
+
+{% block body %}
+	<div class="trick-container p-3">
+		<section class="mb-2">
+			<h1 class="text-center">Add new picture for :
+				<br>
+				{{ trick.name}}
+			</h1>
+		</section>
+
+		{{ form_start(form) }}
+		{{ form_errors(form) }}
+		{{ form_widget(form.file) }}
+		<button type="submit" class="btn btn-success mt-3">Add picture</button>
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

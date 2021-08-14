@@ -1,0 +1,109 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.main-img {
+    position: relative;
+    text-align: center;
+}
+
+.main-img img {
+    width: 100%;
+    max-height: 90vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.main-img .title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.arrow-down {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+
+.arrow-up {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 15px;
+    position: sticky;
+}
+
+.mobile-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 2px solid black;
+    min-height: 60px;
+    z-index: 1000;
+    background-color: #fff;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+}
+
+.navbar-nav {
+    margin-right: 12%;
+}
+
+nav {
+    background-color: #959595;
+}
+
+.trick-container {
+    max-width: 800px;
+    border: 1px solid black;
+    margin: 35px auto 35px auto;
+    position: relative;
+}
+
+.cover {
+    width: 100%;
+    object-fit: cover;
+}
+
+.trick-medias {
+    overflow: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.medias-img {
+    vertical-align: top;
+    height: 125px;
+}
+
+.trick-toolbox {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.add-media {
+    max-height: 125px;
+    border: 1px solid black;
+}
+
+.card-im {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 0;
+    max-height: 200px;
+}

@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick :
+	{{ trick.name }}
+{% endblock %}
+
+{% block body %}
+	<div class="trick-container">
+		<section class="mb-2">
+			<div class="d-flex trick-toolbox">
+				<div class="ms-auto p-2">
+					<a href="#" class="fs-auto" data-bs-toggle="modal" data-bs-target="#mainPictureModal">
+						<i class="fas fa-pen"></i>
+					</a>
+
+				</div>
+			</div>
+			<img src="{{upload_directory ~ trick.mainPicturePath}}" alt="" class="cover">
+		</section>
+
+		<section class="trick-medias">
+			<div class="d-flex">
+				<div class="d-flex flex-nowrap align-content-around">
+					<div class="d-flex flex-column add-media" type="button" data-bs-toggle="modal" data-bs-target="#add-modal">
+						<i class="fas fa-image text-center fa-3x"></i>
+						<a href="{{ path('picture_add', {'id': trick.id }) }}">
+							<span class="mt-5 mx-3">add new picture</span>
+
+						</a>
+						<i class="fas fa-plus mx-auto"></i>
+					</div>
+				</div>
+				<div class="d-flex">
+					<div class="d-flex flex-nowrap align-content-around">
+						<div class="d-flex flex-column add-media" type="button" data-bs-toggle="modal" data-bs-target="#add-modal">
+							<i class="fas fa-video text-center fa-3x"></i>
+							<a href="{{ path('video_add', {'id': trick.id }) }}">
+								<span class="mt-5 mx-3">add new video</span>
+
+							</a>
+							<i class="fas fa-plus mx-auto"></i>
+						</div>
+					</div>
+					<!-- Button trigger modal -->
+
+					{% for picture in trick.pictures %}
+						<div class="d-flex flex-column">
+							<div>
+								<img type="button" src="{{upload_directory ~ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
+							</div>
+							<div class="d-flex">
+
+								<div class="ms-auto p-2">
+									<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ picture.id }}">
+										<i class="fas fa-trash"></i>
+									</a>
+
+								</div>
+							</div>
+						</div>
+						<div class="modal fade " id="staticBackdrop{{picture.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{picture.id}}" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">{{trick.name}}</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<img src="{{ upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
+									</div>
+
+								</div>
+							</div>
+						</div>
+						{% include "trick/_deleteModal_picture.html.twig" %}
+					{% endfor %}
+					{% for media in trick.media %}
+						<div class="d-flex flex-column">
+							<div>
+								<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							</div>
+							<div class="d-flex">
+								<div class="ms-auto p-2">
+									<a href="{{ path('video_edit', {'id': media.id }) }}" class="fs-auto">
+										<i class="fas fa-pen"></i>
+									</a>
+								</div>
+								<div class="ml-auto p-2">
+									<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ media.id }}">
+										<i class="fas fa-trash"></i>
+									</a>
+									{% include "trick/_deleteModal_media.html.twig" %}
+								</div>
+							</div>
+						</div>
+
+					{% endfor %}
+				</div>
+			</section>
+			{{ form_start(formView) }}
+			{{ form_errors(formView) }}
+			<h1 class="m-3">{{ form_row(formView.name) }}</h1>
+			<div class="container">
+				<section class="container">
+					<p>{{form_row(formView.description) }}</p>
+				</section>
+				<div class="row">
+					<div class="col-md-3 col-sm-5">
+						{{ form_row(formView.type) }}
+					</div>
+				</div>
+				<div class="d-flex">
+					<div class="ms-auto">
+						<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+							<i class="fas fa-trash"></i>
+							Delete
+						</button>
+					</div>
+					<button type="submit" class="btn btn-primary ms-4 me-5 mb-3">
+						<i class="fas fa-save"></i>
+						Save
+					</button>
+				</div>
+			</div>
+			{% include "trick/_mainPicture_modal.html.twig" %}
+			{{ form_end(formView) }}
+			{% include "trick/_deleteModal.html.twig" %}
+		</div>
+	{% endblock %}

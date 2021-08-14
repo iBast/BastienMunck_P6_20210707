@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trick :
+	{{ trick.name }}
+{% endblock %}
+
+{% block body %}
+	<div class="trick-container">
+		<section class="mb-2">
+			{% if app.user %}
+				{% if trick | trickCanUpdate %}
+					<div class="d-flex trick-toolbox">
+						<div class="ms-auto p-2">
+							<a href="{{ path('trick_edit', {'slug': trick.slug})}}" class="fs-auto">
+								<i class="fas fa-pen"></i>
+							</a>
+						</div>
+					{% endif %}
+					{% if trick | trickCanDelete %}
+						<div class="ms-auto p-2">
+							<a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ trick.id }}">
+								<i class="fas fa-trash"></i>
+							</a>
+						</div>
+					</div>
+					{% include "trick/_deleteModal.html.twig" %}
+				{% endif %}
+			{% endif %}
+
+			<img src="{{upload_directory ~ trick.mainPicturepath}}" alt="" class="cover">
+		</section>
+		<h1>{{trick.name}}</h1>
+
+		<section
+			class="trick-medias d-none d-md-block">
+			<!-- Button trigger modal -->
+
+			{% for picture in trick.pictures %}
+				<img type="button" src="{{ upload_directory ~ picture.path }}" alt="trick" class="medias-img" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{picture.id}}">
+				<div class="modal fade " id="staticBackdrop{{picture.id}}" tabindex="-1" aria-labelledby="staticBackdropLabel{{picture.id}}" aria-hidden="true">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">{{trick.name}}</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								<img src="{{ upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
+							</div>
+
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+			{% for media in trick.media %}
+				<iframe width="210" height="125" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+			{% endfor %}
+
+		</section>
+		<div class="d-sm-block d-md-none">
+			<section class="media-mobile d-flex justify-content-center mt-2 mb-5 ">
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#medias-modal">See medias</button>
+
+				<div class="modal fade " id="medias-modal" tabindex="-1" aria-labelledby="medias-modalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">{{trick.name}}
+									- medias</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+
+								{% for picture in trick.pictures %}
+									<img src="{{upload_directory ~ picture.path }}" alt="trick" class="img-fluid">
+								{% endfor %}
+								{% for media in trick.media %}
+									<iframe class="img-fluid" width="420" height="250" src="{{media.link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+								{% endfor %}
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+			</section>
+		</div>
+		<section class="container mt-5">
+			<p>{{trick.description}}</p>
+		</section>
+		<div class="d-flex justify-content-around flex-wrap mt-3  mb-5">
+			<div class="badge bg-info mt-3">Added by :
+				{% if trick.owner.nickname is defined %}
+					{{trick.owner.nickname}}
+				{% else %}
+					Deleted user
+				{% endif %}
+			</div>
+			<div class="badge bg-info mt-3">Group:
+				{{trick.type.name}}</div>
+			<div class="badge bg-info mt-3">Added on :
+				{{trick.createdAt | date('d/m/Y')}}</div>
+			<div class="badge bg-info mt-3">Last update :
+				{{trick.updatedAt | date('d/m/Y')}}</div>
+		</div>
+		<hr>
+		<section class="container mt-3">
+
+			{% if app.user and is_granted('ROLE_USER')%}
+				<div class="mb-4">
+					{{ form_start(formView) }}
+
+					{{ form_errors(formView) }}
+
+
+					{{ form_row(formView.content) }}
+
+
+					<button type="submit" class="btn btn-primary">
+						<i class="far fa-paper-plane"></i>
+						Send your comment
+					</button>
+
+
+					{{ form_end(formView) }}
+				</div>
+			{% endif %}
+
+
+			{% for comment in comments %}
+				<div class="d-flex justify-content-between">
+					<div>
+						<b class="text-muted" id="{{ loop.index }}">{{comment.author.nickname}}</b>
+						-
+						<small class="text-muted">{{ comment.createdAt | date('d/m/Y H:i')}}
+							:</small>
+					</div>
+					{% if comment.author == app.user %}
+						<form
+							action="{{ path('comment_delete', {'id': comment.id}) }}" method="post" id="delete-comment">
+							{# the argument of csrf_token() is an arbitrary string used to generate the token #}
+							<input type="hidden" name="token" value="{{ csrf_token('delete-comment') }}"/>
+
+							<button type="submit" class="btn btn-link" for="delete-trick">
+								<i class="fas fa-trash"></i>
+							</button>
+						</form>
+					{% endif %}
+				</div>
+				<div class="card border-primary mb-3 mx-auto">
+
+					<div class="card-body">
+						<p class="card-text">{{comment.content}}</p>
+					</div>
+				</div>
+			{% endfor %}
+			{% if isLastPage == false %}
+				<div class="d-flex justify-content-center mb-3">
+					<a href="{{ path('trick_comment_limit', {'limit': nextpage, 'slug': trick.slug}) }}#{{limit}}" class="btn btn-outline-primary" id="loadmore">
+						<i class="fas fa-spinner fa-spin"></i>
+						Load more</a>
+				</div>
+			{% endif %}
+		</section>
+	</div>
+{% endblock %}
