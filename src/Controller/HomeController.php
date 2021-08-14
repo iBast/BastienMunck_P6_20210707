@@ -19,9 +19,9 @@ class HomeController extends AbstractController
 
     #[Route('/limit/{limit}', name: 'homepage_with_limit', methods: ['GET'])]
     #[Route('/', name: 'homepage')]
-    public function index($limit = 8)
+    public function index($limit = 10)
     {
-        $options = $this->manager->paginate($limit, 1, 8);
+        $options = $this->manager->paginate($limit, 1, 10);
         if ($options['page'] > $options['lastPageNb']) {
             return $this->redirectToRoute('homepage');
         }

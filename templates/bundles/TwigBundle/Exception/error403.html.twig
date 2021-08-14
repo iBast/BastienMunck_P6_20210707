@@ -1,0 +1,16 @@
+{# templates/bundles/TwigBundle/Exception/error404.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Access denied
+{% endblock %}
+
+{% block body %}
+	<h1>Access denied</h1>
+	<div class="trick-container">
+		<p>
+			Your rights dosn't allow you to access this page
+			<a href="{{ path('homepage') }}">return to the homepage</a>.
+		</p>
+	</div>
+{% endblock %}
