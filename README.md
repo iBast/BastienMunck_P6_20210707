@@ -1,4 +1,7 @@
 # BastienMunck_P6_20210707
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ff6180a9244241b5b5652cd5263baef6)](https://app.codacy.com/gh/iBast/BastienMunck_P6_20210707?utm_source=github.com&utm_medium=referral&utm_content=iBast/BastienMunck_P6_20210707&utm_campaign=Badge_Grade_Settings)
+
 Project 6 of [Openclassrooms](https://openclassrooms.com) php symfony training courses
 
 
