@@ -39,7 +39,7 @@ DATABASE_URL="mysql://user:password@host/db?serverVersion=X.X.XX"
 php bin/console doctrine:database:create
 ```
 
-        then
+then
 
 ```console
 php bin/console doctrine:migration:migrate
