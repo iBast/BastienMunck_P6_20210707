@@ -31,8 +31,18 @@ DATABASE_URL="mysql://user:password@host/db?serverVersion=X.X.XX"
 
 * install the database
     * you can use the sql file in the repository 
-    * or you can install the db with
-    ```console
-    php bin/console doctrine:migration:migrate
-    ```
+    * or you can install the db with doctrine 
 
+        if the database does not exist, create it with the following command in the project directory:
+            ```console
+            php bin/console doctrine:database:create
+            ```
+        then
+            ```console
+            php bin/console doctrine:migration:migrate
+            ```
+
+* Install fixtures to have first contents and the admin account
+```console
+php bin/console doctrine:fixtures:load
+```
