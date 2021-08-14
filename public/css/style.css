@@ -58,9 +58,9 @@ footer {
     height: 60px;
 }
 
-.navbar-nav{
+.navbar-nav {
     margin-right: 12%;
-} 
+}
 
 nav {
     background-color: #959595;
@@ -73,7 +73,7 @@ nav {
     position: relative;
 }
 
-.cover{
+.cover {
     width: 100%;
     object-fit: cover;
 }
