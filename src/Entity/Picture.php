@@ -25,7 +25,7 @@ class Picture implements EntityInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="pictures")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(onDelete="SET NULL", nullable=true)
      */
     private $trick;
 

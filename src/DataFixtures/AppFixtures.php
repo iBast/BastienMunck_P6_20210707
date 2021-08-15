@@ -9,7 +9,6 @@ use App\Entity\Group;
 use App\Entity\Media;
 use App\Entity\Picture;
 use App\Entity\Trick;
-use Bezhanov\Faker\Provider\Commerce;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -32,6 +31,17 @@ class AppFixtures extends Fixture
         $faker = Factory::create('fr_FR');
         $faker->addProvider(new \Bezhanov\Faker\Provider\Commerce($faker));
 
+        $admin = new User;
+
+        $hash = $this->hasher->hashPassword($admin, "password");
+        $admin->setEmail("admin@gmail.com")
+            ->setPassword($hash)
+            ->setNickname("Admin")
+            ->setRoles(['ROLE_ADMIN'])
+            ->setIsVerified(1);
+
+        $manager->persist($admin);
+
         $users = [];
         for ($u = 0; $u < 5; $u++) {
             $user = new User();
@@ -46,11 +56,11 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
+        $type = ['grabs', 'rotations', 'flips', 'slides', 'one foot tricks', 'Old school'];
 
-        for ($g = 0; $g < 5; $g++) {
+        foreach ($type as $name) {
             $group = new Group;
-            $type = ['grabs', 'rotations', 'flips', 'slides', 'one foot tricks'];
-            $group->setName($faker->randomElement($type));
+            $group->setName($name);
 
             $manager->persist($group);
 
@@ -81,7 +91,7 @@ class AppFixtures extends Fixture
                     $picture
                         ->setAddedBy($faker->randomElement($users))
                         ->setTrick($trick)
-                        ->setPath(mt_rand(1, 7) . '.jpg');
+                        ->setPath(mt_rand(1, 26) . '.jpg');
                     $manager->persist($picture);
                     if ($p === 0) {
                         $trick->setMainPicture($picture);
