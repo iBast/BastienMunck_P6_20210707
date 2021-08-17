@@ -9,8 +9,6 @@ use App\Form\CommentType;
 use App\Security\TrickVoter;
 use App\Manager\TrickManager;
 use App\Repository\TrickRepository;
-use App\Repository\CommentRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -104,8 +102,8 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function delete(Trick $trick, Request $request)
     {
+        $this->denyAccessUnlessGranted(TrickVoter::DELETE, $trick);
         $submittedToken = $request->request->get('token');
-
         // 'delete-item' is the same value used in the template to generate the token
         if ($this->isCsrfTokenValid('delete-trick', $submittedToken)) {
             $this->trickManager->remove($trick);
@@ -118,7 +116,7 @@ class TrickController extends AbstractController
 
     #[Route('/comment/delete/{id}', name: 'comment_delete')]
     #[IsGranted('ROLE_USER')]
-    public function deleteComment(Comment $comment, Request $request, CommentRepository $commentRepository)
+    public function deleteComment(Comment $comment, Request $request)
     {
         $submittedToken = $request->request->get('token');
         $trick = $this->trickRepository->find($comment->getTrick());
