@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Trick;
 use App\Entity\Picture;
 use App\Form\PictureType;
 use App\Manager\PictureManager;
@@ -28,9 +29,8 @@ class PictureController extends AbstractController
 
     #[Route('/picture/delete/{id}', name: 'picture_delete')]
     #[IsGranted('ROLE_USER')]
-    public function delete($id, Request $request, PictureRepository $pictureRepository): Response
+    public function delete(Picture $picture, Request $request, PictureRepository $pictureRepository): Response
     {
-        $picture = $pictureRepository->findOneBy(['id' => $id]);
         $submittedToken = $request->request->get('token');
         $slug = $picture->getTrick()->getSlug();
         // 'delete-item' is the same value used in the template to generate the token
@@ -49,11 +49,10 @@ class PictureController extends AbstractController
 
     #[Route('/picture/add/{id}', name: 'picture_add')]
     #[IsGranted('ROLE_USER')]
-    public function add($id, Request $request, UploadFileService $uploadFileService)
+    public function add(Trick $trick, Request $request, UploadFileService $uploadFileService)
     {
         $picture = new Picture;
         $form = $this->createForm(PictureType::class);
-        $trick = $this->trickRepository->find($id);
         $slug = $trick->getSlug();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

@@ -3,15 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Media;
+use App\Entity\Trick;
 use App\Form\MediaType;
+use App\Manager\MediaManager;
 use App\Repository\MediaRepository;
 use App\Repository\TrickRepository;
-use App\Manager\MediaManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MediaController extends AbstractController
@@ -29,9 +30,8 @@ class MediaController extends AbstractController
 
     #[Route('/video/delete/{id}', name: 'media_delete')]
     #[IsGranted('ROLE_USER')]
-    public function delete($id, Request $request): Response
+    public function delete(Media $media, Request $request): Response
     {
-        $media = $this->mediaRepository->findOneBy(['id' => $id]);
         $submittedToken = $request->request->get('token');
         $slug = $media->getTrick()->getSlug();
         // 'delete-item' is the same value used in the template to generate the token
@@ -48,11 +48,10 @@ class MediaController extends AbstractController
 
     #[Route('/video/add/{id}', name: 'video_add')]
     #[IsGranted('ROLE_USER')]
-    public function add($id, Request $request)
+    public function add(Trick $trick, Request $request)
     {
         $video = new Media;
         $form = $this->createForm(MediaType::class, $video);
-        $trick = $this->trickRepository->find($id);
         $slug = $trick->getSlug();
 
         $form->handleRequest($request);
@@ -77,9 +76,8 @@ class MediaController extends AbstractController
 
     #[Route('/video/edit/{id}', name: 'video_edit')]
     #[IsGranted('ROLE_USER')]
-    public function edit($id, Request $request)
+    public function edit(Media $video, Request $request)
     {
-        $video = $this->mediaRepository->find($id);
         $form = $this->createForm(MediaType::class, $video);
         $trick = $this->trickRepository->find($video->getTrick());
         $slug = $trick->getSlug();
